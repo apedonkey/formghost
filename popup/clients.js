@@ -7,6 +7,7 @@
 let clients = [];
 let editingClientId = null;
 let deletingClientId = null;
+let importData = null; // Temporary storage for CSV import data
 
 // DOM Elements
 const elements = {
@@ -16,6 +17,10 @@ const elements = {
   addClientBtn: document.getElementById('addClientBtn'),
   clientsList: document.getElementById('clientsList'),
   emptyState: document.getElementById('emptyState'),
+  // CSV Import/Export
+  importCsvBtn: document.getElementById('importCsvBtn'),
+  exportCsvBtn: document.getElementById('exportCsvBtn'),
+  csvFileInput: document.getElementById('csvFileInput'),
   // Edit Modal
   editModal: document.getElementById('editModal'),
   editModalTitle: document.getElementById('editModalTitle'),
@@ -45,7 +50,36 @@ const elements = {
   closeDeleteModal: document.getElementById('closeDeleteModal'),
   deleteClientName: document.getElementById('deleteClientName'),
   cancelDeleteBtn: document.getElementById('cancelDeleteBtn'),
-  confirmDeleteBtn: document.getElementById('confirmDeleteBtn')
+  confirmDeleteBtn: document.getElementById('confirmDeleteBtn'),
+  // Export CSV Modal
+  exportCsvModal: document.getElementById('exportCsvModal'),
+  closeExportCsvModal: document.getElementById('closeExportCsvModal'),
+  exportClientCount: document.getElementById('exportClientCount'),
+  exportIncludeSensitive: document.getElementById('exportIncludeSensitive'),
+  cancelExportCsvBtn: document.getElementById('cancelExportCsvBtn'),
+  confirmExportCsvBtn: document.getElementById('confirmExportCsvBtn'),
+  // Import Preview Modal
+  importPreviewModal: document.getElementById('importPreviewModal'),
+  closeImportPreviewModal: document.getElementById('closeImportPreviewModal'),
+  importRowCount: document.getElementById('importRowCount'),
+  columnMappingsContainer: document.getElementById('columnMappingsContainer'),
+  importPreviewTable: document.getElementById('importPreviewTable'),
+  duplicateStrategy: document.getElementById('duplicateStrategy'),
+  cancelImportPreviewBtn: document.getElementById('cancelImportPreviewBtn'),
+  confirmImportBtn: document.getElementById('confirmImportBtn'),
+  // Import Results Modal
+  importResultsModal: document.getElementById('importResultsModal'),
+  closeImportResultsModal: document.getElementById('closeImportResultsModal'),
+  importedCount: document.getElementById('importedCount'),
+  updatedCount: document.getElementById('updatedCount'),
+  skippedCount: document.getElementById('skippedCount'),
+  errorsCount: document.getElementById('errorsCount'),
+  updatedResult: document.getElementById('updatedResult'),
+  skippedResult: document.getElementById('skippedResult'),
+  errorsResult: document.getElementById('errorsResult'),
+  errorDetails: document.getElementById('errorDetails'),
+  errorList: document.getElementById('errorList'),
+  closeImportResultsBtn: document.getElementById('closeImportResultsBtn')
 };
 
 /**
@@ -504,6 +538,396 @@ function toggleApiKeyVisibility() {
   }
 }
 
+// ============================================================================
+// CSV IMPORT/EXPORT FUNCTIONS
+// ============================================================================
+
+/**
+ * Opens export CSV modal
+ */
+function openExportCsvModal() {
+  if (clients.length === 0) {
+    alert('No clients to export');
+    return;
+  }
+
+  elements.exportClientCount.textContent = clients.length;
+  elements.exportIncludeSensitive.checked = false;
+  elements.exportCsvModal.style.display = 'flex';
+}
+
+/**
+ * Closes export CSV modal
+ */
+function closeExportCsvModal() {
+  elements.exportCsvModal.style.display = 'none';
+}
+
+/**
+ * Exports clients to CSV
+ */
+async function exportClientsToCSV() {
+  try {
+    const includeSensitive = elements.exportIncludeSensitive.checked;
+    const csvContent = CSVHandler.exportToCSV(clients, includeSensitive);
+
+    if (!csvContent) {
+      alert('Failed to generate CSV');
+      return;
+    }
+
+    const filename = CSVHandler.generateExportFilename();
+    CSVHandler.downloadCSV(csvContent, filename);
+
+    closeExportCsvModal();
+  } catch (error) {
+    console.error('Export failed:', error);
+    alert('Export failed: ' + error.message);
+  }
+}
+
+/**
+ * Triggers file picker for CSV import
+ */
+function triggerCsvImport() {
+  elements.csvFileInput.click();
+}
+
+/**
+ * Handles CSV file selection
+ */
+async function handleCsvFileSelect(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  // Reset file input
+  event.target.value = '';
+
+  if (!file.name.endsWith('.csv')) {
+    alert('Please select a CSV file');
+    return;
+  }
+
+  try {
+    const csvContent = await readFileAsText(file);
+    await processCsvImport(csvContent);
+  } catch (error) {
+    console.error('CSV read error:', error);
+    alert('Failed to read CSV file: ' + error.message);
+  }
+}
+
+/**
+ * Reads file as text
+ */
+function readFileAsText(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => resolve(e.target.result);
+    reader.onerror = (e) => reject(new Error('Failed to read file'));
+    reader.readAsText(file);
+  });
+}
+
+/**
+ * Processes CSV import and shows preview
+ */
+async function processCsvImport(csvContent) {
+  try {
+    // Check for Papa Parse
+    if (typeof Papa === 'undefined') {
+      alert('CSV parser not loaded. Please refresh the page.');
+      return;
+    }
+
+    // Parse CSV
+    const parseResult = await CSVHandler.parseCSV(csvContent);
+
+    if (parseResult.errors && parseResult.errors.length > 0) {
+      console.error('Parse errors:', parseResult.errors);
+      alert('Could not parse CSV file. Please check it\'s a valid CSV.');
+      return;
+    }
+
+    if (!parseResult.data || parseResult.data.length === 0) {
+      alert('CSV file is empty');
+      return;
+    }
+
+    // Detect column mappings
+    const headers = Object.keys(parseResult.data[0]);
+    const columnMappings = CSVHandler.detectColumnMappings(headers);
+
+    // Check if any columns were mapped
+    const mappedCount = Object.values(columnMappings).filter(v => v !== null).length;
+    if (mappedCount === 0) {
+      alert('Could not detect any matching columns. Please check your CSV headers match expected field names.');
+      return;
+    }
+
+    // Store import data
+    importData = {
+      rows: parseResult.data,
+      columnMappings: columnMappings,
+      headers: headers
+    };
+
+    // Show preview modal
+    showImportPreview();
+
+  } catch (error) {
+    console.error('CSV processing error:', error);
+    alert('Failed to process CSV: ' + error.message);
+  }
+}
+
+/**
+ * Shows import preview modal
+ */
+function showImportPreview() {
+  if (!importData) return;
+
+  const { rows, columnMappings, headers } = importData;
+
+  // Update row count
+  elements.importRowCount.textContent = rows.length;
+
+  // Show column mappings
+  renderColumnMappings(headers, columnMappings);
+
+  // Show preview table
+  renderPreviewTable(rows.slice(0, 5), columnMappings);
+
+  // Reset duplicate strategy
+  elements.duplicateStrategy.value = 'skip';
+
+  // Show modal
+  elements.importPreviewModal.style.display = 'flex';
+}
+
+/**
+ * Renders column mappings UI
+ */
+function renderColumnMappings(headers, columnMappings) {
+  const container = elements.columnMappingsContainer;
+  container.innerHTML = '';
+
+  const fieldOptions = [
+    { value: '', label: '(Unmapped)' },
+    { value: 'firstName', label: 'First Name' },
+    { value: 'middleName', label: 'Middle Name' },
+    { value: 'lastName', label: 'Last Name' },
+    { value: 'email', label: 'Email' },
+    { value: 'phone', label: 'Phone' },
+    { value: 'phoneAlt', label: 'Alt Phone' },
+    { value: 'address', label: 'Address' },
+    { value: 'addressLine2', label: 'Address Line 2' },
+    { value: 'city', label: 'City' },
+    { value: 'state', label: 'State' },
+    { value: 'zip', label: 'ZIP' },
+    { value: 'country', label: 'Country' },
+    { value: 'dob', label: 'Date of Birth' },
+    { value: 'ssnLast4', label: 'SSN Last 4' },
+    { value: 'driversLicense', label: 'Driver License' },
+    { value: 'dlState', label: 'DL State' },
+    { value: 'dlExpiration', label: 'DL Expiration' },
+    { value: 'employer', label: 'Employer' },
+    { value: 'occupation', label: 'Occupation' },
+    { value: 'workPhone', label: 'Work Phone' }
+  ];
+
+  headers.forEach(header => {
+    const mappedField = columnMappings[header];
+    const row = document.createElement('div');
+    row.className = 'mapping-row';
+
+    const csvColumn = document.createElement('span');
+    csvColumn.className = 'csv-column';
+    csvColumn.textContent = header;
+
+    const arrow = document.createElement('span');
+    arrow.className = 'mapping-arrow';
+    arrow.textContent = '→';
+
+    const select = document.createElement('select');
+    select.className = 'mapping-select';
+    select.dataset.csvColumn = header;
+
+    fieldOptions.forEach(opt => {
+      const option = document.createElement('option');
+      option.value = opt.value;
+      option.textContent = opt.label;
+      if (opt.value === mappedField) {
+        option.selected = true;
+      }
+      select.appendChild(option);
+    });
+
+    // Update mapping on change
+    select.addEventListener('change', (e) => {
+      importData.columnMappings[header] = e.target.value || null;
+    });
+
+    row.appendChild(csvColumn);
+    row.appendChild(arrow);
+    row.appendChild(select);
+
+    container.appendChild(row);
+  });
+}
+
+/**
+ * Renders preview table
+ */
+function renderPreviewTable(rows, columnMappings) {
+  const container = elements.importPreviewTable;
+  container.innerHTML = '';
+
+  if (rows.length === 0) {
+    container.textContent = 'No data to preview';
+    return;
+  }
+
+  const table = document.createElement('table');
+  table.className = 'preview-data-table';
+
+  // Header row
+  const thead = document.createElement('thead');
+  const headerRow = document.createElement('tr');
+
+  Object.keys(rows[0]).forEach(csvColumn => {
+    const th = document.createElement('th');
+    const mappedField = columnMappings[csvColumn];
+    th.innerHTML = `<div class="preview-header">${escapeHtml(csvColumn)}<br><small>${mappedField || '(unmapped)'}</small></div>`;
+    headerRow.appendChild(th);
+  });
+
+  thead.appendChild(headerRow);
+  table.appendChild(thead);
+
+  // Data rows
+  const tbody = document.createElement('tbody');
+
+  rows.forEach(row => {
+    const tr = document.createElement('tr');
+
+    Object.values(row).forEach(value => {
+      const td = document.createElement('td');
+      td.textContent = value || '';
+      tr.appendChild(td);
+    });
+
+    tbody.appendChild(tr);
+  });
+
+  table.appendChild(tbody);
+  container.appendChild(table);
+}
+
+/**
+ * Closes import preview modal
+ */
+function closeImportPreviewModal() {
+  elements.importPreviewModal.style.display = 'none';
+  importData = null;
+}
+
+/**
+ * Confirms and executes import
+ */
+async function confirmImport() {
+  if (!importData) return;
+
+  try {
+    const { rows, columnMappings } = importData;
+    const duplicateStrategy = elements.duplicateStrategy.value;
+
+    // Import clients
+    const results = CSVHandler.importClients(rows, columnMappings, clients, duplicateStrategy);
+
+    // Create new clients
+    for (const clientData of results.imported) {
+      await sendMessage({
+        type: 'CREATE_CLIENT',
+        clientData
+      });
+    }
+
+    // Update existing clients
+    for (const clientData of results.updated) {
+      await sendMessage({
+        type: 'UPDATE_CLIENT',
+        clientId: clientData.id,
+        updates: clientData
+      });
+    }
+
+    // Reload clients
+    await loadClients();
+
+    // Close preview modal
+    closeImportPreviewModal();
+
+    // Show results modal
+    showImportResults(results);
+
+  } catch (error) {
+    console.error('Import failed:', error);
+    alert('Import failed: ' + error.message);
+  }
+}
+
+/**
+ * Shows import results modal
+ */
+function showImportResults(results) {
+  // Update counts
+  elements.importedCount.textContent = results.imported.length;
+  elements.updatedCount.textContent = results.updated.length;
+  elements.skippedCount.textContent = results.skipped.length;
+  elements.errorsCount.textContent = results.errors.length;
+
+  // Show/hide sections
+  elements.updatedResult.style.display = results.updated.length > 0 ? 'block' : 'none';
+  elements.skippedResult.style.display = results.skipped.length > 0 ? 'block' : 'none';
+  elements.errorsResult.style.display = results.errors.length > 0 ? 'block' : 'none';
+
+  // Show error details
+  if (results.errors.length > 0) {
+    elements.errorDetails.style.display = 'block';
+    renderErrorList(results.errors);
+  } else {
+    elements.errorDetails.style.display = 'none';
+  }
+
+  // Show modal
+  elements.importResultsModal.style.display = 'flex';
+}
+
+/**
+ * Renders error list
+ */
+function renderErrorList(errors) {
+  const list = elements.errorList;
+  list.innerHTML = '';
+
+  errors.forEach(error => {
+    const item = document.createElement('div');
+    item.className = 'error-item';
+    item.innerHTML = `
+      <strong>Row ${error.row}:</strong> ${error.errors.join(', ')}
+    `;
+    list.appendChild(item);
+  });
+}
+
+/**
+ * Closes import results modal
+ */
+function closeImportResultsModal() {
+  elements.importResultsModal.style.display = 'none';
+}
+
 // Event Listeners
 
 // Navigation
@@ -538,8 +962,30 @@ elements.closeDeleteModal.addEventListener('click', closeDeleteModal);
 elements.cancelDeleteBtn.addEventListener('click', closeDeleteModal);
 elements.confirmDeleteBtn.addEventListener('click', confirmDelete);
 
+// CSV Import/Export
+elements.exportCsvBtn.addEventListener('click', openExportCsvModal);
+elements.closeExportCsvModal.addEventListener('click', closeExportCsvModal);
+elements.cancelExportCsvBtn.addEventListener('click', closeExportCsvModal);
+elements.confirmExportCsvBtn.addEventListener('click', exportClientsToCSV);
+
+elements.importCsvBtn.addEventListener('click', triggerCsvImport);
+elements.csvFileInput.addEventListener('change', handleCsvFileSelect);
+elements.closeImportPreviewModal.addEventListener('click', closeImportPreviewModal);
+elements.cancelImportPreviewBtn.addEventListener('click', closeImportPreviewModal);
+elements.confirmImportBtn.addEventListener('click', confirmImport);
+
+elements.closeImportResultsModal.addEventListener('click', closeImportResultsModal);
+elements.closeImportResultsBtn.addEventListener('click', closeImportResultsModal);
+
 // Close modals on outside click
-[elements.editModal, elements.settingsModal, elements.deleteModal].forEach(modal => {
+[
+  elements.editModal,
+  elements.settingsModal,
+  elements.deleteModal,
+  elements.exportCsvModal,
+  elements.importPreviewModal,
+  elements.importResultsModal
+].forEach(modal => {
   modal.addEventListener('click', (e) => {
     if (e.target === modal) {
       modal.style.display = 'none';
