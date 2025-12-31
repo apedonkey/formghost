@@ -56,13 +56,13 @@ Update these placeholders:
    - Files: `index.html`, footer links in all pages
 
 2. **Support Email:**
-   - Current placeholder: `support@formghost.io`
-   - Replace with your actual support email
+   - Current: `support@formghost.app`
+   - Update if needed
    - Files: All three HTML files
 
 3. **Custom Domain (Optional):**
    - In Cloudflare Pages dashboard, go to "Custom domains"
-   - Add your domain (e.g., `formghost.io`)
+   - Add your domain (e.g., `formghost.app`)
    - Update DNS settings as instructed
 
 ## 🎨 Customization
