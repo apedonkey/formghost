@@ -33,10 +33,6 @@ const elements = {
   // Settings Modal
   settingsModal: document.getElementById('settingsModal'),
   closeSettingsModal: document.getElementById('closeSettingsModal'),
-  apiKeyInput: document.getElementById('apiKeyInput'),
-  toggleApiKey: document.getElementById('toggleApiKey'),
-  validateKeyBtn: document.getElementById('validateKeyBtn'),
-  keyStatus: document.getElementById('keyStatus'),
   excludeSensitive: document.getElementById('excludeSensitive'),
   dateFormat: document.getElementById('dateFormat'),
   phoneFormat: document.getElementById('phoneFormat'),
@@ -420,7 +416,6 @@ async function openSettingsModal() {
   try {
     const settings = await sendMessage({ type: 'GET_AI_SETTINGS' });
 
-    elements.apiKeyInput.value = settings.apiKey || '';
     elements.excludeSensitive.checked = settings.excludeSensitive !== false;
     elements.dateFormat.value = settings.defaultDateFormat || 'MM/DD/YYYY';
     elements.phoneFormat.value = settings.defaultPhoneFormat || '(###) ###-####';
@@ -460,7 +455,6 @@ async function saveSettings() {
     await sendMessage({
       type: 'SAVE_AI_SETTINGS',
       settings: {
-        apiKey: elements.apiKeyInput.value.trim(),
         excludeSensitive: elements.excludeSensitive.checked,
         defaultDateFormat: elements.dateFormat.value,
         defaultPhoneFormat: elements.phoneFormat.value,
@@ -476,39 +470,6 @@ async function saveSettings() {
 }
 
 /**
- * Validates API key
- */
-async function validateApiKey() {
-  const key = elements.apiKeyInput.value.trim();
-  if (!key) {
-    elements.keyStatus.textContent = 'Enter a key first';
-    elements.keyStatus.className = 'invalid';
-    return;
-  }
-
-  elements.keyStatus.textContent = 'Checking...';
-  elements.keyStatus.className = 'checking';
-
-  try {
-    const response = await sendMessage({
-      type: 'VALIDATE_API_KEY',
-      apiKey: key
-    });
-
-    if (response.valid) {
-      elements.keyStatus.textContent = 'Valid!';
-      elements.keyStatus.className = 'valid';
-    } else {
-      elements.keyStatus.textContent = 'Invalid key';
-      elements.keyStatus.className = 'invalid';
-    }
-  } catch (error) {
-    elements.keyStatus.textContent = 'Error validating';
-    elements.keyStatus.className = 'invalid';
-  }
-}
-
-/**
  * Clears mapping cache
  */
 async function clearCache() {
@@ -519,22 +480,6 @@ async function clearCache() {
     updateCacheStats({ totalEntries: 0 });
   } catch (error) {
     console.error('Failed to clear cache:', error);
-  }
-}
-
-/**
- * Toggles API key visibility
- */
-function toggleApiKeyVisibility() {
-  const input = elements.apiKeyInput;
-  const btn = elements.toggleApiKey;
-
-  if (input.type === 'password') {
-    input.type = 'text';
-    btn.textContent = 'Hide';
-  } else {
-    input.type = 'password';
-    btn.textContent = 'Show';
   }
 }
 
@@ -953,8 +898,6 @@ elements.addCustomFieldBtn.addEventListener('click', () => addCustomFieldRow());
 elements.closeSettingsModal.addEventListener('click', closeSettingsModal);
 elements.cancelSettingsBtn.addEventListener('click', closeSettingsModal);
 elements.saveSettingsBtn.addEventListener('click', saveSettings);
-elements.toggleApiKey.addEventListener('click', toggleApiKeyVisibility);
-elements.validateKeyBtn.addEventListener('click', validateApiKey);
 elements.clearCacheBtn.addEventListener('click', clearCache);
 
 // Delete modal

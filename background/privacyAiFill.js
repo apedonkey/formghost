@@ -11,8 +11,7 @@
 // const FieldMapper = require('./lib/fieldMapper.js');
 // const PrivacyAIClient = require('./lib/privacyAI.js');
 
-const CLAUDE_API_URL = 'https://api.anthropic.com/v1/messages';
-const CLAUDE_MODEL = 'claude-haiku-3-5-20241022';
+// Configuration constants loaded from config.js via service-worker.js
 
 /**
  * Privacy-first AI form filling
@@ -221,18 +220,30 @@ function buildVariablesFromClient(client) {
 async function getAISettings() {
   try {
     const result = await chrome.storage.local.get('formghost_ai_settings');
+    const userSettings = result.formghost_ai_settings || {};
+
+    // Always use built-in API key, allow user to override other settings
     return {
-      apiKey: '',
+      apiKey: FORMGHOST_API_KEY,
       excludeSensitive: true,
       defaultDateFormat: 'MM/DD/YYYY',
       defaultPhoneFormat: '(###) ###-####',
       cacheEnabled: false, // Disable cache for privacy
       fieldDelay: 50,
-      ...result.formghost_ai_settings
+      ...userSettings,
+      // Force built-in API key even if user settings exist
+      apiKey: FORMGHOST_API_KEY
     };
   } catch (error) {
     console.error('Failed to get AI settings:', error);
-    return {};
+    return {
+      apiKey: FORMGHOST_API_KEY,
+      excludeSensitive: true,
+      defaultDateFormat: 'MM/DD/YYYY',
+      defaultPhoneFormat: '(###) ###-####',
+      cacheEnabled: false,
+      fieldDelay: 50
+    };
   }
 }
 

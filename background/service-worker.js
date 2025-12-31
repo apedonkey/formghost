@@ -3,6 +3,9 @@
  * Orchestrates recording state, network interception, and message handling
  */
 
+// Load configuration
+importScripts('../config.js');
+
 // ============================================================================
 // STORAGE MODULE (inlined to avoid import issues)
 // ============================================================================
@@ -1373,8 +1376,56 @@ function getReplayState() {
 // AI FILL FUNCTIONS
 // ============================================================================
 
-const CLAUDE_API_URL = 'https://api.anthropic.com/v1/messages';
-const CLAUDE_MODEL = 'claude-haiku-3-5-20241022';
+/**
+ * Gets AI usage stats and checks rate limit
+ * @returns {Promise<Object>} {allowed: boolean, count: number, limit: number, resetDate: string}
+ */
+async function checkAIRateLimit() {
+  try {
+    const result = await chrome.storage.local.get(AI_USAGE_STORAGE_KEY);
+    const usage = result[AI_USAGE_STORAGE_KEY] || { count: 0, resetDate: null };
+
+    // Get current month (YYYY-MM-DD format, first of month)
+    const now = new Date();
+    const currentMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-01`;
+
+    // Reset if new month
+    if (!usage.resetDate || usage.resetDate !== currentMonth) {
+      usage.count = 0;
+      usage.resetDate = currentMonth;
+      await chrome.storage.local.set({ [AI_USAGE_STORAGE_KEY]: usage });
+    }
+
+    return {
+      allowed: usage.count < AI_FILLS_PER_MONTH,
+      count: usage.count,
+      limit: AI_FILLS_PER_MONTH,
+      resetDate: currentMonth
+    };
+  } catch (error) {
+    console.error('Failed to check AI rate limit:', error);
+    // On error, allow the request
+    return { allowed: true, count: 0, limit: AI_FILLS_PER_MONTH, resetDate: null };
+  }
+}
+
+/**
+ * Increments AI usage counter
+ * @returns {Promise<void>}
+ */
+async function incrementAIUsage() {
+  try {
+    const result = await chrome.storage.local.get(AI_USAGE_STORAGE_KEY);
+    const usage = result[AI_USAGE_STORAGE_KEY] || { count: 0, resetDate: null };
+
+    usage.count += 1;
+
+    await chrome.storage.local.set({ [AI_USAGE_STORAGE_KEY]: usage });
+    console.log(`AI usage: ${usage.count}/${AI_FILLS_PER_MONTH}`);
+  } catch (error) {
+    console.error('Failed to increment AI usage:', error);
+  }
+}
 
 /**
  * Gets all clients from storage
@@ -1468,16 +1519,28 @@ async function deleteClient(clientId) {
 async function getAISettings() {
   try {
     const result = await chrome.storage.local.get('formGhostAISettings');
-    return result.formGhostAISettings || {
-      apiKey: '',
+    const userSettings = result.formGhostAISettings || {};
+
+    // Always use built-in API key, allow user to override other settings
+    return {
+      apiKey: FORMGHOST_API_KEY,
+      excludeSensitive: true,
+      defaultDateFormat: 'MM/DD/YYYY',
+      defaultPhoneFormat: '(###) ###-####',
+      cacheEnabled: true,
+      ...userSettings,
+      // Force built-in API key even if user settings exist
+      apiKey: FORMGHOST_API_KEY
+    };
+  } catch (error) {
+    console.error('Failed to get AI settings:', error);
+    return {
+      apiKey: FORMGHOST_API_KEY,
       excludeSensitive: true,
       defaultDateFormat: 'MM/DD/YYYY',
       defaultPhoneFormat: '(###) ###-####',
       cacheEnabled: true
     };
-  } catch (error) {
-    console.error('Failed to get AI settings:', error);
-    return {};
   }
 }
 
@@ -1563,6 +1626,16 @@ async function getCacheStats() {
  */
 async function aiFillForm(clientId) {
   try {
+    // Check rate limit first
+    const rateLimit = await checkAIRateLimit();
+    if (!rateLimit.allowed) {
+      return {
+        success: false,
+        error: `You've used all ${rateLimit.limit} AI fills this month. Resets on ${new Date(rateLimit.resetDate).toLocaleDateString()}. Upgrade to Pro for unlimited fills.`,
+        rateLimited: true
+      };
+    }
+
     // Get client data
     const clientsResult = await chrome.storage.local.get('formGhostClients');
     const clients = clientsResult.formGhostClients || [];
@@ -1572,11 +1645,8 @@ async function aiFillForm(clientId) {
       return { success: false, error: 'Client not found' };
     }
 
-    // Get AI settings
+    // Get AI settings (built-in API key)
     const settings = await getAISettings();
-    if (!settings.apiKey) {
-      return { success: false, error: 'API key not configured' };
-    }
 
     // Get active tab
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
@@ -1671,6 +1741,11 @@ async function aiFillForm(clientId) {
       mappings: fillData
     });
 
+    // Increment AI usage counter if fill was successful
+    if (fillResult && fillResult.success) {
+      await incrementAIUsage();
+    }
+
     return fillResult;
   } catch (error) {
     console.error('AI fill failed:', error);
@@ -1761,8 +1836,14 @@ Map the client data to the appropriate form fields.`;
     });
 
     if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.error?.message || 'API request failed');
+      // Handle rate limiting
+      if (response.status === 429) {
+        throw new Error('AI service is currently busy. Please try again in a few moments.');
+      }
+
+      // Handle other errors
+      const error = await response.json().catch(() => ({}));
+      throw new Error(error.error?.message || 'AI matching service temporarily unavailable');
     }
 
     const data = await response.json();

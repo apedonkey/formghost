@@ -1,6 +1,9 @@
 # User-specific settings
 .claude/
 
+# Configuration with API keys
+config.js
+
 # OS files
 .DS_Store
 Thumbs.db
