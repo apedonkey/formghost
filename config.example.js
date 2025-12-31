@@ -10,7 +10,7 @@
 // Built-in API key for zero-friction AI fills
 const FORMGHOST_API_KEY = 'YOUR_ANTHROPIC_API_KEY_HERE';
 const CLAUDE_API_URL = 'https://api.anthropic.com/v1/messages';
-const CLAUDE_MODEL = 'claude-3-5-haiku-20241022';
+const CLAUDE_MODEL = 'claude-haiku-4-5';
 
 // Rate limiting constants
 const AI_FILLS_PER_MONTH = 50;
