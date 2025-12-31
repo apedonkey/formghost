@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Icon Generator - Puppeteer Recorder Pro</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #1a1a2e;
+      color: #e0e0e0;
+      padding: 40px;
+      text-align: center;
+    }
+    h1 { color: #00d9ff; }
+    .icons { display: flex; gap: 40px; justify-content: center; margin: 40px 0; }
+    .icon-box { background: #16213e; padding: 20px; border-radius: 12px; }
+    .icon-box h3 { margin: 10px 0; color: #b0b0c0; }
+    canvas { background: transparent; border: 1px dashed #4a4a6a; }
+    button {
+      background: #e63946;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      margin: 10px;
+    }
+    button:hover { background: #c1121f; }
+    .instructions {
+      background: #16213e;
+      padding: 20px;
+      border-radius: 12px;
+      max-width: 600px;
+      margin: 20px auto;
+      text-align: left;
+    }
+    code { background: #0f3460; padding: 2px 6px; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <h1>Puppeteer Recorder Pro - Icon Generator</h1>
+  <p>Click the buttons below to download the generated icons</p>
+
+  <div class="icons">
+    <div class="icon-box">
+      <canvas id="icon16" width="16" height="16"></canvas>
+      <h3>16x16</h3>
+      <button onclick="download('icon16', 16)">Download</button>
+    </div>
+    <div class="icon-box">
+      <canvas id="icon48" width="48" height="48"></canvas>
+      <h3>48x48</h3>
+      <button onclick="download('icon48', 48)">Download</button>
+    </div>
+    <div class="icon-box">
+      <canvas id="icon128" width="128" height="128"></canvas>
+      <h3>128x128</h3>
+      <button onclick="download('icon128', 128)">Download</button>
+    </div>
+  </div>
+
+  <button onclick="downloadAll()">Download All Icons</button>
+
+  <div class="instructions">
+    <h3>Instructions:</h3>
+    <ol>
+      <li>Click "Download All Icons" to get all three icon sizes</li>
+      <li>Save the downloaded files to the <code>icons/</code> folder</li>
+      <li>Name them: <code>icon16.png</code>, <code>icon48.png</code>, <code>icon128.png</code></li>
+      <li>Reload the extension in Chrome</li>
+    </ol>
+  </div>
+
+  <script>
+    /**
+     * Draws the recorder icon on a canvas
+     * @param {CanvasRenderingContext2D} ctx - Canvas context
+     * @param {number} size - Icon size
+     */
+    function drawIcon(ctx, size) {
+      const center = size / 2;
+      const radius = size * 0.35;
+
+      // Clear canvas
+      ctx.clearRect(0, 0, size, size);
+
+      // Background circle (dark)
+      ctx.beginPath();
+      ctx.arc(center, center, size * 0.45, 0, Math.PI * 2);
+      ctx.fillStyle = '#1a1a2e';
+      ctx.fill();
+
+      // Outer ring
+      ctx.beginPath();
+      ctx.arc(center, center, size * 0.42, 0, Math.PI * 2);
+      ctx.strokeStyle = '#e63946';
+      ctx.lineWidth = size * 0.04;
+      ctx.stroke();
+
+      // Inner record button (red circle)
+      ctx.beginPath();
+      ctx.arc(center, center, radius, 0, Math.PI * 2);
+      const gradient = ctx.createRadialGradient(
+        center - radius * 0.3, center - radius * 0.3, 0,
+        center, center, radius
+      );
+      gradient.addColorStop(0, '#ff6b6b');
+      gradient.addColorStop(1, '#e63946');
+      ctx.fillStyle = gradient;
+      ctx.fill();
+
+      // Highlight
+      ctx.beginPath();
+      ctx.arc(center - radius * 0.25, center - radius * 0.25, radius * 0.2, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+      ctx.fill();
+    }
+
+    /**
+     * Downloads a canvas as PNG
+     * @param {string} canvasId - Canvas element ID
+     * @param {number} size - Icon size for filename
+     */
+    function download(canvasId, size) {
+      const canvas = document.getElementById(canvasId);
+      const link = document.createElement('a');
+      link.download = `icon${size}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }
+
+    /**
+     * Downloads all icons
+     */
+    function downloadAll() {
+      download('icon16', 16);
+      setTimeout(() => download('icon48', 48), 100);
+      setTimeout(() => download('icon128', 128), 200);
+    }
+
+    // Generate icons on load
+    window.onload = function() {
+      [16, 48, 128].forEach(size => {
+        const canvas = document.getElementById(`icon${size}`);
+        const ctx = canvas.getContext('2d');
+        drawIcon(ctx, size);
+      });
+    };
+  </script>
+</body>
+</html>

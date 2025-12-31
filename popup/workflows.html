@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Workflows - FormGhost</title>
+  <link rel="stylesheet" href="popup.css">
+  <link rel="stylesheet" href="workflows.css">
+</head>
+<body>
+  <div class="container workflows-container">
+    <header class="header">
+      <button class="btn-back" id="backBtn" title="Back to main">&#8592;</button>
+      <h1 class="title">MY WORKFLOWS</h1>
+    </header>
+
+    <section class="search-section">
+      <input type="text" id="searchInput" class="search-input" placeholder="Search workflows...">
+      <select id="tagFilter" class="tag-filter">
+        <option value="">All tags</option>
+      </select>
+    </section>
+
+    <section class="workflows-list" id="workflowsList">
+      <div class="empty-state" id="emptyState">
+        <p>No workflows saved yet.</p>
+        <p>Record and save a workflow to get started.</p>
+      </div>
+    </section>
+
+    <!-- Run Modal -->
+    <div class="modal" id="runModal" style="display: none;">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Run Workflow</h3>
+          <button class="btn-close" id="closeRunModal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="workflow-info">
+            <span class="workflow-name" id="runWorkflowName"></span>
+            <span class="workflow-steps" id="runWorkflowSteps"></span>
+          </div>
+
+          <div id="variablesSection" style="display: none;">
+            <h4>Variables</h4>
+            <div class="preset-row">
+              <select id="presetSelect" class="preset-select">
+                <option value="">Select a preset...</option>
+              </select>
+              <button class="btn btn-sm" id="loadPresetBtn">Load</button>
+            </div>
+            <div id="variableInputs" class="variable-inputs"></div>
+            <div class="preset-save-row">
+              <input type="text" id="newPresetName" class="preset-name-input" placeholder="Preset name...">
+              <button class="btn btn-sm btn-accent" id="savePresetBtn">Save Preset</button>
+            </div>
+          </div>
+
+          <div class="run-options">
+            <label class="checkbox-label">
+              <input type="checkbox" id="highlightElements" checked>
+              <span>Highlight elements during replay</span>
+            </label>
+            <div class="delay-option">
+              <label>Step delay:</label>
+              <select id="stepDelay">
+                <option value="0">None</option>
+                <option value="500">0.5s</option>
+                <option value="1000" selected>1s</option>
+                <option value="2000">2s</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" id="cancelRunBtn">Cancel</button>
+          <button class="btn btn-primary btn-run" id="startRunBtn">
+            <span class="btn-icon">&#9654;</span> Run
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Progress Modal -->
+    <div class="modal" id="progressModal" style="display: none;">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Running Workflow</h3>
+        </div>
+        <div class="modal-body">
+          <div class="progress-info">
+            <span id="progressWorkflowName"></span>
+          </div>
+          <div class="progress-bar-container">
+            <div class="progress-bar" id="progressBar"></div>
+          </div>
+          <div class="progress-details">
+            <span id="progressStep">Step 0 of 0</span>
+            <span id="progressStepInfo"></span>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" id="pauseRunBtn">
+            <span class="btn-icon">&#10074;&#10074;</span> Pause
+          </button>
+          <button class="btn btn-danger" id="cancelRunBtn2">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Context Menu -->
+    <div class="context-menu" id="contextMenu" style="display: none;">
+      <button class="context-menu-item" data-action="rename">Rename</button>
+      <button class="context-menu-item" data-action="duplicate">Duplicate</button>
+      <button class="context-menu-item" data-action="export">Export JSON</button>
+      <button class="context-menu-item" data-action="tags">Manage Tags</button>
+      <hr>
+      <button class="context-menu-item danger" data-action="delete">Delete</button>
+    </div>
+  </div>
+
+  <script src="workflows.js"></script>
+</body>
+</html>

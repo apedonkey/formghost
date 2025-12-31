@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Step Editor - FormGhost</title>
+  <link rel="stylesheet" href="editor.css">
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <h1 class="title">Step Editor</h1>
+      <div class="header-actions">
+        <button class="btn btn-secondary" id="refreshBtn">Refresh</button>
+        <button class="btn btn-primary" id="saveBtn">Save Changes</button>
+      </div>
+    </header>
+
+    <div class="toolbar">
+      <span class="step-count" id="stepCount">0 steps</span>
+      <div class="toolbar-actions">
+        <button class="btn btn-sm" id="selectAllBtn">Select All</button>
+        <button class="btn btn-sm btn-danger" id="deleteSelectedBtn" disabled>Delete Selected</button>
+      </div>
+    </div>
+
+    <div class="steps-container" id="stepsContainer">
+      <div class="empty-state" id="emptyState">
+        <p>No actions recorded yet.</p>
+        <p>Start recording to capture browser interactions.</p>
+      </div>
+      <ul class="steps-list" id="stepsList"></ul>
+    </div>
+
+    <div class="edit-panel" id="editPanel" style="display: none;">
+      <div class="edit-panel-header">
+        <h3>Edit Step</h3>
+        <button class="btn btn-icon" id="closeEditPanel">&times;</button>
+      </div>
+      <form id="editForm">
+        <div class="form-group">
+          <label for="editType">Action Type</label>
+          <select id="editType" class="form-control">
+            <option value="click">Click</option>
+            <option value="dblclick">Double Click</option>
+            <option value="type">Type Text</option>
+            <option value="keypress">Key Press</option>
+            <option value="select">Select Option</option>
+            <option value="scroll">Scroll</option>
+            <option value="hover">Hover</option>
+            <option value="navigate">Navigate</option>
+            <option value="drag">Drag & Drop</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="editSelector">Selector</label>
+          <input type="text" id="editSelector" class="form-control" placeholder="CSS selector or XPath">
+        </div>
+        <div class="form-group" id="valueGroup">
+          <label for="editValue">Value</label>
+          <div class="value-input-row">
+            <input type="text" id="editValue" class="form-control" placeholder="Text value or key">
+            <button type="button" id="markVariableBtn" class="btn btn-sm btn-variable" title="Convert to variable">
+              &#123;&#123;x&#125;&#125;
+            </button>
+          </div>
+          <div id="variableControls" class="variable-controls" style="display: none;">
+            <label for="variableName">Variable Name</label>
+            <input type="text" id="variableName" class="form-control" placeholder="e.g., clientName">
+            <button type="button" id="applyVariableBtn" class="btn btn-sm btn-primary">Apply Variable</button>
+            <button type="button" id="cancelVariableBtn" class="btn btn-sm btn-secondary">Cancel</button>
+          </div>
+          <div id="variableInfo" class="variable-info" style="display: none;">
+            <span class="variable-badge">Variable: <strong id="currentVariableName"></strong></span>
+            <button type="button" id="removeVariableBtn" class="btn btn-sm btn-danger">Remove</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="editDescription">Description</label>
+          <input type="text" id="editDescription" class="form-control" placeholder="Human-readable description">
+        </div>
+        <div class="form-group form-group-checkbox">
+          <label class="checkbox-label">
+            <input type="checkbox" id="pauseBeforeExecute">
+            <span>Pause before executing this step</span>
+          </label>
+          <small class="help-text">Shows confirmation dialog during replay</small>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" id="cancelEdit">Cancel</button>
+          <button type="submit" class="btn btn-primary">Apply</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="editor.js"></script>
+</body>
+</html>

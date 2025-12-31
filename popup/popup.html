@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FormGhost</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <h1 class="title">FORMGHOST</h1>
+    </header>
+
+    <section class="status-section">
+      <div class="status-indicator">
+        <span class="status-dot" id="statusDot"></span>
+        <span class="status-text" id="statusText">Ready</span>
+      </div>
+      <span class="timer" id="timer">00:00</span>
+    </section>
+
+    <section class="stats-section">
+      <div class="stat">
+        <span class="stat-label">Actions:</span>
+        <span class="stat-value" id="actionCount">0</span>
+      </div>
+      <div class="stat">
+        <span class="stat-label">Requests:</span>
+        <span class="stat-value" id="requestCount">0</span>
+      </div>
+      <div class="stat">
+        <span class="stat-label">Notes:</span>
+        <span class="stat-value" id="annotationCount">0</span>
+      </div>
+      <div class="stat">
+        <span class="stat-label">Asserts:</span>
+        <span class="stat-value" id="assertionCount">0</span>
+      </div>
+    </section>
+
+    <section class="controls-section">
+      <button class="btn btn-primary" id="startBtn">
+        <span class="btn-icon">&#9679;</span> Record
+      </button>
+      <button class="btn btn-secondary" id="pauseBtn" disabled>
+        <span class="btn-icon">&#10074;&#10074;</span> Pause
+      </button>
+      <button class="btn btn-danger" id="stopBtn" disabled>
+        <span class="btn-icon">&#9632;</span> Stop
+      </button>
+      <button class="btn btn-accent" id="annotateBtn" disabled>
+        <span class="btn-icon">&#9998;</span> Annotate
+      </button>
+      <button class="btn btn-assert" id="assertBtn" disabled>
+        <span class="btn-icon">&#10003;</span> Assert
+      </button>
+      <button class="btn btn-sidebar" id="sidebarBtn" disabled>
+        <span class="btn-icon">&#9776;</span> Preview
+      </button>
+    </section>
+
+    <details class="settings-section">
+      <summary class="settings-toggle">
+        <span class="settings-icon">&#9881;</span> Settings
+      </summary>
+      <div class="settings-content">
+        <label class="checkbox-label">
+          <input type="checkbox" id="captureScreenshots" checked>
+          <span>Capture screenshots</span>
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" id="captureNetwork" checked>
+          <span>Capture network requests</span>
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" id="captureStorage" checked>
+          <span>Capture localStorage/cookies</span>
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" id="captureHover">
+          <span>Capture hover events</span>
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" id="redactSensitive">
+          <span>Redact sensitive values</span>
+        </label>
+      </div>
+    </details>
+
+    <section class="ai-fill-section">
+      <div class="ai-fill-header">
+        <span class="ai-fill-title">AI Form Fill</span>
+        <button class="btn btn-sm btn-ai-fill" id="clientsBtn">Manage Clients</button>
+      </div>
+      <div class="ai-fill-content">
+        <button class="btn btn-primary btn-fill-now" id="fillFormBtn" title="Fill form with AI">
+          <span class="btn-icon">&#9889;</span> Fill Form
+        </button>
+        <select id="quickClientSelect" class="quick-client-select">
+          <option value="">Select client...</option>
+        </select>
+      </div>
+    </section>
+
+    <section class="workflows-section">
+      <div class="workflows-header">
+        <span class="workflows-title">My Workflows</span>
+        <button class="btn btn-sm btn-workflows" id="manageWorkflowsBtn">Manage All</button>
+      </div>
+      <div class="workflows-list" id="recentWorkflows">
+        <div class="workflow-empty">No workflows yet</div>
+      </div>
+    </section>
+
+    <section class="recordings-section">
+      <div class="recording-name-row">
+        <input type="text" id="recordingName" placeholder="Recording name..." class="recording-name-input">
+        <button class="btn btn-save" id="saveBtn" disabled title="Save recording">&#128190;</button>
+      </div>
+      <div class="saved-recordings-row">
+        <select id="savedRecordingsList" class="saved-recordings-select">
+          <option value="">Load saved recording...</option>
+        </select>
+        <button class="btn btn-load" id="loadBtn" disabled title="Load recording">&#128194;</button>
+        <button class="btn btn-delete" id="deleteBtn" disabled title="Delete recording">&#128465;</button>
+      </div>
+    </section>
+
+    <section class="export-section">
+      <div class="export-row">
+        <button class="btn btn-export" id="exportJsonBtn" disabled>JSON</button>
+        <button class="btn btn-export" id="exportCompactBtn" disabled>Compact</button>
+        <button class="btn btn-export" id="exportPuppeteerBtn" disabled>Puppeteer</button>
+        <button class="btn btn-export" id="exportPlaywrightBtn" disabled>Playwright</button>
+      </div>
+      <div class="export-row">
+        <button class="btn btn-edit" id="editStepsBtn" disabled>Edit Steps</button>
+        <button class="btn btn-clear" id="clearBtn">Clear</button>
+      </div>
+    </section>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
