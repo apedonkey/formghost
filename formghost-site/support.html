@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="FormGhost Support - Frequently asked questions and help documentation.">
+  <title>Support - FormGhost</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <div class="header-container">
+      <a href="/" class="logo">
+        <span class="logo-icon">👻</span>
+        <span>FormGhost</span>
+      </a>
+      <nav>
+        <a href="index.html">Home</a>
+        <a href="support.html">Support</a>
+        <a href="privacy.html">Privacy</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- FAQ Section -->
+  <section class="faq">
+    <div class="section-container">
+      <h2>Frequently Asked Questions</h2>
+
+      <div class="faq-list">
+        <div class="faq-item">
+          <h3 class="faq-question">How does FormGhost work?</h3>
+          <p class="faq-answer">
+            FormGhost uses AI to intelligently match your saved data to form fields on any website. When you click "Fill Form," it scans the current page for form fields, analyzes their labels and context, and fills them with the appropriate information from your saved profile. The AI can understand variations in field naming (like "First Name" vs "Given Name") and works on forms you've never encountered before.
+          </p>
+        </div>
+
+        <div class="faq-item">
+          <h3 class="faq-question">Is my data safe and private?</h3>
+          <p class="faq-answer">
+            Absolutely. Your personal information is stored locally in your browser using Chrome's secure storage API and never uploaded to any server. When FormGhost uses AI to match fields, it only sends the field <strong>labels</strong> (like "Email Address" or "Phone Number")—never your actual personal data. This means your name, email, address, and other sensitive information stays 100% on your computer.
+          </p>
+        </div>
+
+        <div class="faq-item">
+          <h3 class="faq-question">What counts as an "AI fill"?</h3>
+          <p class="faq-answer">
+            An "AI fill" is used each time FormGhost successfully fills a form using AI-powered field matching. If you fill the same form multiple times (like submitting several insurance applications on the same website), each submission counts as one AI fill. However, if FormGhost can use direct replay (on forms it recognizes), it won't use your AI fill quota.
+          </p>
+        </div>
+
+        <div class="faq-item">
+          <h3 class="faq-question">Why didn't FormGhost fill a field correctly?</h3>
+          <p class="faq-answer">
+            There are a few common reasons:
+          </p>
+          <ul class="faq-answer">
+            <li><strong>Missing data:</strong> You may not have that information saved in your profile. Check your saved data and add any missing fields.</li>
+            <li><strong>Unusual field name:</strong> Some forms use non-standard labels that the AI may not recognize. You can manually fill these fields.</li>
+            <li><strong>Special formatting:</strong> Fields requiring specific formats (like phone numbers with extensions) may need manual adjustment.</li>
+            <li><strong>Dynamic forms:</strong> Some websites use JavaScript to dynamically load fields, which may require a page refresh before filling.</li>
+          </ul>
+          <p class="faq-answer">
+            FormGhost will show you any unmatched fields so you know what needs manual attention.
+          </p>
+        </div>
+
+        <div class="faq-item">
+          <h3 class="faq-question">How do I edit my saved data?</h3>
+          <p class="faq-answer">
+            Click the FormGhost extension icon in your Chrome toolbar, then navigate to the "Clients" page. From there, you can:
+          </p>
+          <ul class="faq-answer">
+            <li>Edit existing profiles by clicking the edit icon next to any saved client</li>
+            <li>Add new profiles with the "Add Client" button</li>
+            <li>Delete profiles you no longer need</li>
+            <li>Import/export client data using CSV files</li>
+          </ul>
+        </div>
+
+        <div class="faq-item">
+          <h3 class="faq-question">When does my monthly limit reset?</h3>
+          <p class="faq-answer">
+            Your 50 free AI fills reset automatically on the 1st of each month at 12:00 AM (your local time). You can check your current usage count in the extension's settings page. If you need more than 50 fills per month, consider upgrading to FormGhost Pro for unlimited AI fills.
+          </p>
+        </div>
+
+        <div class="faq-item">
+          <h3 class="faq-question">Can I use FormGhost on multiple computers?</h3>
+          <p class="faq-answer">
+            Yes, but your saved data is stored locally in each browser. If you want to use the same data on multiple computers, you can export your client data as a CSV file from one computer and import it on another. This is also a great way to back up your data.
+          </p>
+        </div>
+
+        <div class="faq-item">
+          <h3 class="faq-question">Does FormGhost work on all websites?</h3>
+          <p class="faq-answer">
+            FormGhost works on the vast majority of web forms, including insurance applications, booking forms, registration pages, and more. However, it cannot work on:
+          </p>
+          <ul class="faq-answer">
+            <li>Chrome system pages (like chrome://settings)</li>
+            <li>Some highly secure banking/financial pages that block extensions</li>
+            <li>Forms that require manual CAPTCHA verification (you'll still need to complete those yourself)</li>
+          </ul>
+        </div>
+
+        <div class="faq-item">
+          <h3 class="faq-question">What browser is FormGhost available for?</h3>
+          <p class="faq-answer">
+            Currently, FormGhost is available exclusively for Google Chrome and Chromium-based browsers (like Microsoft Edge, Brave, and Opera). Support for Firefox and Safari may be added in the future.
+          </p>
+        </div>
+
+        <div class="faq-item">
+          <h3 class="faq-question">Is there a way to get unlimited AI fills?</h3>
+          <p class="faq-answer">
+            Yes! FormGhost Pro offers unlimited AI fills along with additional features. Keep an eye on the extension for upgrade options, or contact us at <a href="mailto:support@formghost.io">support@formghost.io</a> for early access.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section class="contact">
+    <div class="section-container">
+      <h2>Still Need Help?</h2>
+      <div class="contact-box">
+        <p>Can't find the answer you're looking for? We're here to help.</p>
+        <p style="margin-top: 1.5rem;">
+          Email us at <a href="mailto:support@formghost.io" class="contact-email">support@formghost.io</a>
+        </p>
+        <p style="margin-top: 1rem; font-size: 0.875rem; color: var(--text-secondary);">
+          We typically respond within 24 hours on business days.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-container">
+      <div class="footer-section">
+        <h4>FormGhost</h4>
+        <p>AI-powered form filling for professionals who value their time and privacy.</p>
+      </div>
+      <div class="footer-section">
+        <h4>Product</h4>
+        <a href="index.html#features">Features</a>
+        <a href="support.html">Support</a>
+        <a href="privacy.html">Privacy Policy</a>
+      </div>
+      <div class="footer-section">
+        <h4>Company</h4>
+        <a href="mailto:support@formghost.io">Contact Us</a>
+        <a href="#">Chrome Web Store</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2025 FormGhost. All rights reserved.</p>
+    </div>
+  </footer>
+</body>
+</html>
