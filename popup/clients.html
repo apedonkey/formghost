@@ -6,6 +6,9 @@
   <title>Clients - FormGhost</title>
   <link rel="stylesheet" href="popup.css">
   <link rel="stylesheet" href="clients.css">
+  <link rel="stylesheet" href="csv-styles.css">
+  <!-- Papa Parse for CSV handling -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 </head>
 <body>
   <div class="container clients-container">
@@ -18,7 +21,12 @@
     <!-- Search and Add -->
     <section class="search-section">
       <input type="text" id="searchInput" class="search-input" placeholder="Search clients...">
-      <button class="btn btn-primary btn-add" id="addClientBtn">+ Add</button>
+      <div class="btn-group">
+        <button class="btn btn-primary btn-add" id="addClientBtn">+ Add</button>
+        <button class="btn btn-outline btn-sm" id="importCsvBtn">Import CSV</button>
+        <button class="btn btn-outline btn-sm" id="exportCsvBtn">Export CSV</button>
+      </div>
+      <input type="file" id="csvFileInput" accept=".csv" style="display: none;">
     </section>
 
     <!-- Client List -->
@@ -177,22 +185,6 @@
         </div>
         <div class="modal-body">
           <div class="form-section">
-            <h4>API Configuration</h4>
-            <div class="form-group">
-              <label>Anthropic API Key</label>
-              <div class="input-with-button">
-                <input type="password" id="apiKeyInput" placeholder="sk-ant-...">
-                <button type="button" class="btn btn-sm" id="toggleApiKey">Show</button>
-              </div>
-              <small class="form-hint">Get your API key from <a href="https://console.anthropic.com/settings/keys" target="_blank">console.anthropic.com</a></small>
-            </div>
-            <div class="form-group">
-              <button class="btn btn-outline btn-sm" id="validateKeyBtn">Validate Key</button>
-              <span id="keyStatus"></span>
-            </div>
-          </div>
-
-          <div class="form-section">
             <h4>Privacy</h4>
             <label class="checkbox-label">
               <input type="checkbox" id="excludeSensitive" checked>
@@ -258,8 +250,110 @@
         </div>
       </div>
     </div>
+
+    <!-- Export CSV Modal -->
+    <div class="modal" id="exportCsvModal" style="display: none;">
+      <div class="modal-content modal-small">
+        <div class="modal-header">
+          <h3>Export Clients to CSV</h3>
+          <button class="btn-close" id="closeExportCsvModal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p>Export <strong id="exportClientCount">0</strong> clients to CSV file.</p>
+          <div class="form-section">
+            <label class="checkbox-label">
+              <input type="checkbox" id="exportIncludeSensitive">
+              <span>Include sensitive fields (SSN, Driver's License)</span>
+            </label>
+            <small class="form-hint">⚠️ Use caution when sharing files with sensitive data</small>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" id="cancelExportCsvBtn">Cancel</button>
+          <button class="btn btn-primary" id="confirmExportCsvBtn">Export</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Import CSV Preview Modal -->
+    <div class="modal" id="importPreviewModal" style="display: none;">
+      <div class="modal-content modal-large">
+        <div class="modal-header">
+          <h3>Import Clients from CSV</h3>
+          <button class="btn-close" id="closeImportPreviewModal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="import-summary">
+            <p>Ready to import <strong id="importRowCount">0</strong> rows</p>
+          </div>
+
+          <div class="form-section">
+            <h4>Column Mappings</h4>
+            <div id="columnMappingsContainer" class="column-mappings"></div>
+          </div>
+
+          <div class="form-section">
+            <h4>Preview (first 5 rows)</h4>
+            <div id="importPreviewTable" class="preview-table"></div>
+          </div>
+
+          <div class="form-section">
+            <h4>Duplicate Handling</h4>
+            <p class="form-hint">How should we handle clients with matching name + (DOB or email)?</p>
+            <select id="duplicateStrategy" class="form-select">
+              <option value="skip">Skip duplicates (don't import)</option>
+              <option value="update">Update existing clients</option>
+              <option value="import">Import anyway (create duplicates)</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" id="cancelImportPreviewBtn">Cancel</button>
+          <button class="btn btn-primary" id="confirmImportBtn">Import</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Import Results Modal -->
+    <div class="modal" id="importResultsModal" style="display: none;">
+      <div class="modal-content modal-medium">
+        <div class="modal-header">
+          <h3>Import Complete</h3>
+          <button class="btn-close" id="closeImportResultsModal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="import-results">
+            <div class="result-item result-success">
+              <span class="result-icon">✓</span>
+              <span>Successfully imported: <strong id="importedCount">0</strong> clients</span>
+            </div>
+            <div class="result-item result-info" id="updatedResult" style="display: none;">
+              <span class="result-icon">↻</span>
+              <span>Updated existing: <strong id="updatedCount">0</strong> clients</span>
+            </div>
+            <div class="result-item result-warning" id="skippedResult" style="display: none;">
+              <span class="result-icon">⊘</span>
+              <span>Skipped duplicates: <strong id="skippedCount">0</strong> clients</span>
+            </div>
+            <div class="result-item result-error" id="errorsResult" style="display: none;">
+              <span class="result-icon">✗</span>
+              <span>Rows with errors: <strong id="errorsCount">0</strong></span>
+            </div>
+          </div>
+
+          <div id="errorDetails" class="error-details" style="display: none;">
+            <h4>Error Details</h4>
+            <div id="errorList"></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-primary" id="closeImportResultsBtn">Close</button>
+        </div>
+      </div>
+    </div>
   </div>
 
+  <script src="../lib/csvHandler.js"></script>
   <script src="clients.js"></script>
 </body>
 </html>
