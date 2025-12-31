@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "FormGhost",
-  "version": "2.0.0",
-  "description": "Record, replay, and automate browser workflows with intelligent variable substitution",
+  "version": "2.1.0",
+  "description": "Record, replay, and automate browser workflows with privacy-first AI form filling (zero PII sent)",
   "permissions": [
     "activeTab",
     "storage",
@@ -74,7 +74,8 @@
         "content/replayOverlay.js",
         "content/replayer.js",
         "content/formScanner.js",
-        "content/formFiller.js"
+        "content/formFiller.js",
+        "content/unmatchedFieldsUI.js"
       ],
       "run_at": "document_start",
       "all_frames": true
