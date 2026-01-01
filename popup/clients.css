@@ -364,6 +364,15 @@
   font-size: 12px;
 }
 
+.privacy-notice {
+  background: rgba(34, 197, 94, 0.1);
+  border-left: 3px solid #22c55e;
+  padding: 8px 12px;
+  margin: 8px 0;
+  border-radius: 0 4px 4px 0;
+  color: #86efac;
+}
+
 /* Scrollbar for modal */
 .modal-large::-webkit-scrollbar {
   width: 6px;

@@ -6,6 +6,11 @@
 // Load configuration
 importScripts('../config.js');
 
+// Load privacy-first AI modules
+importScripts('../lib/fieldMapper.js');
+importScripts('../lib/privacyAI.js');
+importScripts('privacyAiFill.js');
+
 // ============================================================================
 // STORAGE MODULE (inlined to avoid import issues)
 // ============================================================================
@@ -935,11 +940,25 @@ async function saveNamedRecording(name) {
     const result = await chrome.storage.local.get('savedRecordings');
     const savedRecordings = result.savedRecordings || {};
 
-    // Save the recording with metadata
+    // Generate form signature for privacy-first AI fill
+    const typeActions = recording.actions.filter(a => a.type === 'type');
+    const formSignature = {
+      url: recording.sessionContext?.startUrl || '',
+      fieldCount: typeActions.length,
+      fields: typeActions.map(a => ({
+        name: a.element?.attributes?.name || null,
+        id: a.element?.attributes?.id || null,
+        label: a.element?.humanLabel || null,
+        type: a.element?.tagName || 'input'
+      }))
+    };
+
+    // Save the recording with metadata and form signature
     savedRecordings[saveId] = {
       name,
       savedAt: Date.now(),
       actionCount: recording.actions.length,
+      formSignature,
       recording
     };
 
@@ -2083,6 +2102,13 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       case 'GET_CACHE_STATS':
         return await getCacheStats();
       case 'AI_FILL_FORM':
+        // Use privacy-first AI fill if workflowId provided, fallback to legacy
+        if (message.workflowId) {
+          const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+          if (!tab) return { success: false, error: 'No active tab' };
+          return await privacyAiFillForm(message.workflowId, message.clientId, tab.id);
+        }
+        // Legacy mode (still sends PII - for backward compatibility)
         return await aiFillForm(message.clientId);
 
       default:

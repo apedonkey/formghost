@@ -8,6 +8,8 @@ let clients = [];
 let editingClientId = null;
 let deletingClientId = null;
 let importData = null; // Temporary storage for CSV import data
+let selectedClientForFill = null; // Client selected for AI fill
+let workflows = []; // Cached workflows for selection
 
 // DOM Elements
 const elements = {
@@ -75,7 +77,16 @@ const elements = {
   errorsResult: document.getElementById('errorsResult'),
   errorDetails: document.getElementById('errorDetails'),
   errorList: document.getElementById('errorList'),
-  closeImportResultsBtn: document.getElementById('closeImportResultsBtn')
+  closeImportResultsBtn: document.getElementById('closeImportResultsBtn'),
+  // Workflow Selection Modal (Privacy-First AI Fill)
+  workflowSelectModal: document.getElementById('workflowSelectModal'),
+  closeWorkflowSelectModal: document.getElementById('closeWorkflowSelectModal'),
+  workflowClientName: document.getElementById('workflowClientName'),
+  workflowSelect: document.getElementById('workflowSelect'),
+  workflowHint: document.getElementById('workflowHint'),
+  useLegacyFill: document.getElementById('useLegacyFill'),
+  cancelWorkflowSelectBtn: document.getElementById('cancelWorkflowSelectBtn'),
+  confirmWorkflowFillBtn: document.getElementById('confirmWorkflowFillBtn')
 };
 
 /**
@@ -200,7 +211,7 @@ function escapeHtml(str) {
 }
 
 /**
- * Selects a client for form filling
+ * Selects a client for form filling - opens workflow selection modal
  */
 async function selectClientForFill(client) {
   try {
@@ -212,13 +223,110 @@ async function selectClientForFill(client) {
       return;
     }
 
-    // Trigger form fill on active tab
-    const response = await sendMessage({
+    // Store selected client
+    selectedClientForFill = client;
+
+    // Load workflows for selection
+    await loadWorkflowsForSelection();
+
+    // Show workflow selection modal
+    elements.workflowClientName.textContent = `${client.firstName} ${client.lastName}`;
+    elements.useLegacyFill.checked = false;
+    elements.workflowSelectModal.style.display = 'flex';
+
+  } catch (error) {
+    console.error('Failed to prepare fill:', error);
+    alert('Failed to prepare fill: ' + error.message);
+  }
+}
+
+/**
+ * Loads workflows for the selection dropdown
+ */
+async function loadWorkflowsForSelection() {
+  try {
+    const result = await sendMessage({ type: 'GET_WORKFLOWS' });
+    workflows = result.workflows || [];
+
+    const select = elements.workflowSelect;
+    select.innerHTML = '';
+
+    if (workflows.length === 0) {
+      select.innerHTML = '<option value="">No workflows available</option>';
+      elements.workflowHint.textContent = 'Record a workflow first to use privacy-first filling.';
+      elements.workflowHint.style.display = 'block';
+    } else {
+      select.innerHTML = '<option value="">Select a workflow...</option>';
+      workflows.forEach(w => {
+        const option = document.createElement('option');
+        option.value = w.id;
+        option.textContent = `${w.name} (${w.actionCount} steps)`;
+        select.appendChild(option);
+      });
+      elements.workflowHint.style.display = 'none';
+    }
+  } catch (error) {
+    console.error('Failed to load workflows:', error);
+    elements.workflowSelect.innerHTML = '<option value="">Error loading workflows</option>';
+  }
+}
+
+/**
+ * Closes the workflow selection modal
+ */
+function closeWorkflowSelectModal() {
+  elements.workflowSelectModal.style.display = 'none';
+  selectedClientForFill = null;
+}
+
+/**
+ * Executes the form fill with selected workflow (or legacy mode)
+ */
+async function executeFormFill() {
+  if (!selectedClientForFill) {
+    alert('No client selected');
+    return;
+  }
+
+  const useLegacy = elements.useLegacyFill.checked;
+  const workflowId = elements.workflowSelect.value;
+
+  // Validate selection
+  if (!useLegacy && !workflowId) {
+    alert('Please select a workflow or enable legacy fill mode.');
+    return;
+  }
+
+  try {
+    // Build message
+    const message = {
       type: 'AI_FILL_FORM',
-      clientId: client.id
-    });
+      clientId: selectedClientForFill.id
+    };
+
+    // Add workflowId for privacy-first mode
+    if (!useLegacy && workflowId) {
+      message.workflowId = workflowId;
+    }
+
+    // Close modal
+    closeWorkflowSelectModal();
+
+    // Execute fill
+    const response = await sendMessage(message);
 
     if (response.success) {
+      // Show privacy info if AI was used
+      if (response.privacy) {
+        console.log('Privacy mode:', response.privacy);
+      }
+
+      // Check for unmatched fields
+      if (response.unmatchedNewFields?.length > 0) {
+        console.log('Unmatched new fields:', response.unmatchedNewFields);
+        // The content script will show the unmatched fields UI
+      }
+
       // Close popup after successful fill
       window.close();
     } else {
@@ -920,6 +1028,11 @@ elements.confirmImportBtn.addEventListener('click', confirmImport);
 elements.closeImportResultsModal.addEventListener('click', closeImportResultsModal);
 elements.closeImportResultsBtn.addEventListener('click', closeImportResultsModal);
 
+// Workflow selection modal (Privacy-First AI Fill)
+elements.closeWorkflowSelectModal.addEventListener('click', closeWorkflowSelectModal);
+elements.cancelWorkflowSelectBtn.addEventListener('click', closeWorkflowSelectModal);
+elements.confirmWorkflowFillBtn.addEventListener('click', executeFormFill);
+
 // Close modals on outside click
 [
   elements.editModal,
@@ -927,7 +1040,8 @@ elements.closeImportResultsBtn.addEventListener('click', closeImportResultsModal
   elements.deleteModal,
   elements.exportCsvModal,
   elements.importPreviewModal,
-  elements.importResultsModal
+  elements.importResultsModal,
+  elements.workflowSelectModal
 ].forEach(modal => {
   modal.addEventListener('click', (e) => {
     if (e.target === modal) {

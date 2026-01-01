@@ -63,9 +63,13 @@ async function privacyAiFillForm(workflowId, clientId, tabId) {
     // 4. Check if this is the SAME form as the recorded workflow
     const recordedFormSignature = workflow.formSignature;
 
+    // Get the actual recording (actions are nested under workflow.recording)
+    const recording = workflow.recording || workflow;
+    const actions = recording.actions || [];
+
     if (FieldMapper.isSameForm(recordedFormSignature, currentFormSignature)) {
       console.log('PrivacyAI Fill: SAME FORM detected - using direct replay (no AI needed)');
-      return await directReplay(workflow, client, tabId);
+      return await directReplay({ ...workflow, actions }, client, tabId);
     }
 
     console.log('PrivacyAI Fill: DIFFERENT FORM detected - using AI label matching');
@@ -77,7 +81,7 @@ async function privacyAiFillForm(workflowId, clientId, tabId) {
     }
 
     // 6. Extract field labels from recorded workflow
-    const recordedFields = FieldMapper.extractRecordedFields(workflow.actions);
+    const recordedFields = FieldMapper.extractRecordedFields(actions);
 
     if (recordedFields.length === 0) {
       return { success: false, error: 'No fillable fields found in recorded workflow' };

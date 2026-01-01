@@ -99,7 +99,7 @@ Result: Form filled + notification showing unmatched fields
 To fully integrate this privacy-first approach:
 
 ### **Backend Integration:**
-- [ ] Add `importScripts()` in `service-worker.js` to load new modules:
+- [x] Add `importScripts()` in `service-worker.js` to load new modules:
   ```javascript
   importScripts(
     'lib/fieldMapper.js',
@@ -108,14 +108,14 @@ To fully integrate this privacy-first approach:
   );
   ```
 
-- [ ] Replace `AI_FILL_FORM` message handler:
+- [x] Replace `AI_FILL_FORM` message handler:
   ```javascript
   case 'AI_FILL_FORM':
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     return await privacyAiFillForm(message.workflowId, message.clientId, tab.id);
   ```
 
-- [ ] Save form signature when recording completes:
+- [x] Save form signature when recording completes:
   ```javascript
   workflow.formSignature = {
     url: window.location.href,
@@ -130,7 +130,7 @@ To fully integrate this privacy-first approach:
   ```
 
 ### **Frontend Integration:**
-- [ ] Update `popup/clients.js` to select workflow:
+- [x] Update `popup/clients.js` to select workflow:
   ```javascript
   // Add workflow dropdown
   <select id="workflow-select">
@@ -146,7 +146,7 @@ To fully integrate this privacy-first approach:
   });
   ```
 
-- [ ] Show unmatched fields after fill:
+- [x] Show unmatched fields after fill:
   ```javascript
   if (response.unmatchedNewFields?.length > 0) {
     await chrome.tabs.sendMessage(tab.id, {
