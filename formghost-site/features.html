@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="FormGhost Features - AI-powered form filling, privacy-first design, multiple profiles, and more.">
+  <title>Features - FormGhost</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <div class="header-container">
+      <a href="/" class="logo">
+        <div class="logo-ghost">
+          <span class="ghost-icon">&#128123;</span>
+        </div>
+        <span>FormGhost</span>
+      </a>
+      <nav>
+        <a href="index.html#how-it-works">How It Works</a>
+        <a href="features.html">Features</a>
+        <a href="support.html">Support</a>
+        <a href="privacy.html">Privacy</a>
+      </nav>
+      <a href="#" class="nav-cta">Get Extension</a>
+    </div>
+  </header>
+
+  <!-- Page Header -->
+  <section class="page-header">
+    <div class="section-container">
+      <span class="section-tag">Features</span>
+      <h1>Everything you need to<br><span class="gradient-text">ghost through forms</span></h1>
+      <p class="subtitle" style="max-width: 600px; margin: 1rem auto 0;">
+        Built for professionals who fill forms all day. Privacy-first, blazing fast, and actually works on any website.
+      </p>
+    </div>
+  </section>
+
+  <!-- Hero Feature: Privacy -->
+  <section class="feature-deep-dive">
+    <div class="section-container">
+      <div class="deep-dive-grid">
+        <div class="deep-dive-content">
+          <span class="section-tag">Core Feature</span>
+          <h2>Privacy-First Architecture</h2>
+          <p class="feature-lead">
+            Your data never leaves your computer. Not "we promise not to look at it" - literally impossible for us to access.
+          </p>
+          <div class="feature-details">
+            <div class="detail-item">
+              <div class="detail-icon">&#128274;</div>
+              <div>
+                <h4>Local-Only Storage</h4>
+                <p>All your profiles are stored in Chrome's secure local storage. We can't see them, access them, or share them.</p>
+              </div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-icon">&#128269;</div>
+              <div>
+                <h4>Labels Only to AI</h4>
+                <p>When matching fields, we send "First Name" to the AI - never "John Smith". Your actual data stays put.</p>
+              </div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-icon">&#128683;</div>
+              <div>
+                <h4>Zero Tracking</h4>
+                <p>No analytics. No telemetry. No cookies. We have no idea who you are or what you're filling out.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="deep-dive-visual">
+          <div class="privacy-demo">
+            <div class="demo-section sent">
+              <div class="demo-header">
+                <span class="status-dot red"></span>
+                Sent to AI (field labels only)
+              </div>
+              <div class="demo-code">
+                <code>"First Name"</code>
+                <code>"Email Address"</code>
+                <code>"Phone Number"</code>
+                <code>"Street Address"</code>
+              </div>
+            </div>
+            <div class="demo-divider">
+              <span>&#8595;</span>
+              AI matches fields
+              <span>&#8595;</span>
+            </div>
+            <div class="demo-section kept">
+              <div class="demo-header">
+                <span class="status-dot green"></span>
+                Stays on your computer
+              </div>
+              <div class="demo-code">
+                <code>"Sarah Johnson"</code>
+                <code>"sarah@company.com"</code>
+                <code>"(555) 123-4567"</code>
+                <code>"123 Main Street"</code>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AI Feature -->
+  <section class="feature-deep-dive alt-bg">
+    <div class="section-container">
+      <div class="deep-dive-grid reverse">
+        <div class="deep-dive-content">
+          <span class="section-tag">Intelligence</span>
+          <h2>AI That Actually Gets It</h2>
+          <p class="feature-lead">
+            Not just pattern matching. Our AI understands context, synonyms, and form layouts you've never seen before.
+          </p>
+          <div class="feature-details">
+            <div class="detail-item">
+              <div class="detail-icon">&#129504;</div>
+              <div>
+                <h4>Context-Aware Matching</h4>
+                <p>"Given Name" = "First Name" = "Nombre" = "Vorname". Works across languages and naming conventions.</p>
+              </div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-icon">&#127919;</div>
+              <div>
+                <h4>Layout Agnostic</h4>
+                <p>Single column, multi-column, tabbed forms, accordions - doesn't matter. It finds every field.</p>
+              </div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-icon">&#9889;</div>
+              <div>
+                <h4>Sub-3-Second Fills</h4>
+                <p>Most forms complete in under 3 seconds. Complex forms with 50+ fields? Still under 5 seconds.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="deep-dive-visual">
+          <div class="ai-demo">
+            <div class="ai-match">
+              <div class="match-left">
+                <span class="field-type">Form says:</span>
+                <code>"Given Name"</code>
+              </div>
+              <div class="match-arrow">&#8594;</div>
+              <div class="match-right">
+                <span class="field-type">AI matches:</span>
+                <code>first_name</code>
+              </div>
+            </div>
+            <div class="ai-match">
+              <div class="match-left">
+                <span class="field-type">Form says:</span>
+                <code>"Mobile Phone"</code>
+              </div>
+              <div class="match-arrow">&#8594;</div>
+              <div class="match-right">
+                <span class="field-type">AI matches:</span>
+                <code>phone</code>
+              </div>
+            </div>
+            <div class="ai-match">
+              <div class="match-left">
+                <span class="field-type">Form says:</span>
+                <code>"Correo Electronico"</code>
+              </div>
+              <div class="match-arrow">&#8594;</div>
+              <div class="match-right">
+                <span class="field-type">AI matches:</span>
+                <code>email</code>
+              </div>
+            </div>
+            <div class="ai-match">
+              <div class="match-left">
+                <span class="field-type">Form says:</span>
+                <code>"Billing Address Line 1"</code>
+              </div>
+              <div class="match-arrow">&#8594;</div>
+              <div class="match-right">
+                <span class="field-type">AI matches:</span>
+                <code>address</code>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Multiple Profiles -->
+  <section class="feature-deep-dive">
+    <div class="section-container">
+      <div class="deep-dive-grid">
+        <div class="deep-dive-content">
+          <span class="section-tag">Organization</span>
+          <h2>Unlimited Client Profiles</h2>
+          <p class="feature-lead">
+            Perfect for professionals who fill forms for multiple clients. Switch profiles instantly, never mix up data.
+          </p>
+          <div class="feature-details">
+            <div class="detail-item">
+              <div class="detail-icon">&#128101;</div>
+              <div>
+                <h4>Unlimited Profiles</h4>
+                <p>Save as many client profiles as you need. 10 clients or 10,000 - no limits, no extra cost.</p>
+              </div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-icon">&#128196;</div>
+              <div>
+                <h4>CSV Import/Export</h4>
+                <p>Bulk import clients from spreadsheets. Export anytime for backup or migration.</p>
+              </div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-icon">&#128269;</div>
+              <div>
+                <h4>Quick Search</h4>
+                <p>Find any client instantly with search. Filter by name, email, or any field.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="deep-dive-visual">
+          <div class="profiles-demo">
+            <div class="profile-card active">
+              <div class="profile-avatar">SJ</div>
+              <div class="profile-info">
+                <span class="profile-name">Sarah Johnson</span>
+                <span class="profile-email">sarah@company.com</span>
+              </div>
+              <span class="profile-badge">Active</span>
+            </div>
+            <div class="profile-card">
+              <div class="profile-avatar">MR</div>
+              <div class="profile-info">
+                <span class="profile-name">Mike Rodriguez</span>
+                <span class="profile-email">mike.r@email.com</span>
+              </div>
+            </div>
+            <div class="profile-card">
+              <div class="profile-avatar">JC</div>
+              <div class="profile-info">
+                <span class="profile-name">Jennifer Chen</span>
+                <span class="profile-email">jchen@business.co</span>
+              </div>
+            </div>
+            <div class="profile-card add-new">
+              <div class="profile-avatar">+</div>
+              <div class="profile-info">
+                <span class="profile-name">Add New Client</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Smart Detection -->
+  <section class="feature-deep-dive alt-bg">
+    <div class="section-container">
+      <div class="deep-dive-grid reverse">
+        <div class="deep-dive-content">
+          <span class="section-tag">Transparency</span>
+          <h2>Know Exactly What Happened</h2>
+          <p class="feature-lead">
+            No black boxes. See exactly which fields were filled, which need attention, and why.
+          </p>
+          <div class="feature-details">
+            <div class="detail-item">
+              <div class="detail-icon">&#9989;</div>
+              <div>
+                <h4>Field-by-Field Status</h4>
+                <p>Green checkmarks for filled fields, yellow warnings for uncertain matches, red flags for failures.</p>
+              </div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-icon">&#128203;</div>
+              <div>
+                <h4>Unmatched Field List</h4>
+                <p>See exactly which fields couldn't be filled so you know what needs manual entry.</p>
+              </div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-icon">&#128260;</div>
+              <div>
+                <h4>One-Click Undo</h4>
+                <p>Made a mistake? Undo the entire fill instantly and start fresh.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="deep-dive-visual">
+          <div class="status-demo">
+            <div class="status-header">Fill Results</div>
+            <div class="status-item success">
+              <span class="status-icon">&#10003;</span>
+              <span class="status-field">First Name</span>
+              <span class="status-value">Sarah</span>
+            </div>
+            <div class="status-item success">
+              <span class="status-icon">&#10003;</span>
+              <span class="status-field">Last Name</span>
+              <span class="status-value">Johnson</span>
+            </div>
+            <div class="status-item success">
+              <span class="status-icon">&#10003;</span>
+              <span class="status-field">Email</span>
+              <span class="status-value">sarah@company.com</span>
+            </div>
+            <div class="status-item warning">
+              <span class="status-icon">!</span>
+              <span class="status-field">Middle Initial</span>
+              <span class="status-value">Not in profile</span>
+            </div>
+            <div class="status-item success">
+              <span class="status-icon">&#10003;</span>
+              <span class="status-field">Phone</span>
+              <span class="status-value">(555) 123-4567</span>
+            </div>
+            <div class="status-footer">
+              <span>4 filled</span>
+              <span>1 needs attention</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Comparison Section -->
+  <section class="comparison-section">
+    <div class="section-container">
+      <div class="section-header">
+        <span class="section-tag">Comparison</span>
+        <h2>How FormGhost Stacks Up</h2>
+        <p>Not all form fillers are created equal.</p>
+      </div>
+      <div class="comparison-table">
+        <div class="comparison-header">
+          <div class="comparison-cell feature-name"></div>
+          <div class="comparison-cell competitor">Browser Autofill</div>
+          <div class="comparison-cell competitor">LastPass/1Password</div>
+          <div class="comparison-cell highlight">FormGhost</div>
+        </div>
+        <div class="comparison-row">
+          <div class="comparison-cell feature-name">Works on any form layout</div>
+          <div class="comparison-cell competitor"><span class="no">&#10007;</span></div>
+          <div class="comparison-cell competitor"><span class="partial">~</span></div>
+          <div class="comparison-cell highlight"><span class="yes">&#10003;</span></div>
+        </div>
+        <div class="comparison-row">
+          <div class="comparison-cell feature-name">AI-powered field matching</div>
+          <div class="comparison-cell competitor"><span class="no">&#10007;</span></div>
+          <div class="comparison-cell competitor"><span class="no">&#10007;</span></div>
+          <div class="comparison-cell highlight"><span class="yes">&#10003;</span></div>
+        </div>
+        <div class="comparison-row">
+          <div class="comparison-cell feature-name">Data stays 100% local</div>
+          <div class="comparison-cell competitor"><span class="partial">~</span></div>
+          <div class="comparison-cell competitor"><span class="no">&#10007;</span></div>
+          <div class="comparison-cell highlight"><span class="yes">&#10003;</span></div>
+        </div>
+        <div class="comparison-row">
+          <div class="comparison-cell feature-name">Multiple client profiles</div>
+          <div class="comparison-cell competitor"><span class="no">&#10007;</span></div>
+          <div class="comparison-cell competitor"><span class="partial">~</span></div>
+          <div class="comparison-cell highlight"><span class="yes">&#10003;</span></div>
+        </div>
+        <div class="comparison-row">
+          <div class="comparison-cell feature-name">Understands synonyms/languages</div>
+          <div class="comparison-cell competitor"><span class="no">&#10007;</span></div>
+          <div class="comparison-cell competitor"><span class="no">&#10007;</span></div>
+          <div class="comparison-cell highlight"><span class="yes">&#10003;</span></div>
+        </div>
+        <div class="comparison-row">
+          <div class="comparison-cell feature-name">CSV import/export</div>
+          <div class="comparison-cell competitor"><span class="no">&#10007;</span></div>
+          <div class="comparison-cell competitor"><span class="yes">&#10003;</span></div>
+          <div class="comparison-cell highlight"><span class="yes">&#10003;</span></div>
+        </div>
+        <div class="comparison-row">
+          <div class="comparison-cell feature-name">Free tier available</div>
+          <div class="comparison-cell competitor"><span class="yes">&#10003;</span></div>
+          <div class="comparison-cell competitor"><span class="partial">~</span></div>
+          <div class="comparison-cell highlight"><span class="yes">&#10003;</span></div>
+        </div>
+      </div>
+      <p class="comparison-note">
+        <span class="yes">&#10003;</span> = Full support &nbsp;&nbsp;
+        <span class="partial">~</span> = Limited &nbsp;&nbsp;
+        <span class="no">&#10007;</span> = Not supported
+      </p>
+    </div>
+  </section>
+
+  <!-- All Features Grid -->
+  <section class="all-features">
+    <div class="section-container">
+      <div class="section-header">
+        <span class="section-tag">Complete List</span>
+        <h2>Every Feature at a Glance</h2>
+      </div>
+      <div class="features-grid-compact">
+        <div class="feature-mini">
+          <span class="feature-mini-icon">&#129302;</span>
+          <h4>AI Field Matching</h4>
+          <p>Powered by Claude AI for intelligent form understanding</p>
+        </div>
+        <div class="feature-mini">
+          <span class="feature-mini-icon">&#128274;</span>
+          <h4>100% Local Storage</h4>
+          <p>Your data never leaves your browser</p>
+        </div>
+        <div class="feature-mini">
+          <span class="feature-mini-icon">&#128101;</span>
+          <h4>Unlimited Profiles</h4>
+          <p>Save as many clients as you need</p>
+        </div>
+        <div class="feature-mini">
+          <span class="feature-mini-icon">&#9889;</span>
+          <h4>Sub-3s Fills</h4>
+          <p>Most forms complete in seconds</p>
+        </div>
+        <div class="feature-mini">
+          <span class="feature-mini-icon">&#128196;</span>
+          <h4>CSV Import/Export</h4>
+          <p>Bulk data management made easy</p>
+        </div>
+        <div class="feature-mini">
+          <span class="feature-mini-icon">&#127760;</span>
+          <h4>Any Website</h4>
+          <p>Works on forms you've never seen</p>
+        </div>
+        <div class="feature-mini">
+          <span class="feature-mini-icon">&#128269;</span>
+          <h4>Quick Search</h4>
+          <p>Find any client instantly</p>
+        </div>
+        <div class="feature-mini">
+          <span class="feature-mini-icon">&#128203;</span>
+          <h4>Fill Reports</h4>
+          <p>See exactly what was filled</p>
+        </div>
+        <div class="feature-mini">
+          <span class="feature-mini-icon">&#128260;</span>
+          <h4>One-Click Undo</h4>
+          <p>Mistakes are easily reversed</p>
+        </div>
+        <div class="feature-mini">
+          <span class="feature-mini-icon">&#127757;</span>
+          <h4>Multi-Language</h4>
+          <p>Works with international forms</p>
+        </div>
+        <div class="feature-mini">
+          <span class="feature-mini-icon">&#128683;</span>
+          <h4>Zero Tracking</h4>
+          <p>No analytics or telemetry</p>
+        </div>
+        <div class="feature-mini">
+          <span class="feature-mini-icon">&#128241;</span>
+          <h4>Keyboard Shortcuts</h4>
+          <p>Fill forms without touching your mouse</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="final-cta">
+    <div class="section-container">
+      <div class="cta-content">
+        <h2>Ready to stop typing?</h2>
+        <p>50 free AI fills per month. No credit card required.</p>
+        <a href="#" class="cta-button primary large">
+          <span class="cta-icon">&#128123;</span>
+          Add to Chrome - It's Free
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-container">
+      <div class="footer-main">
+        <div class="footer-brand">
+          <a href="/" class="logo">
+            <div class="logo-ghost">
+              <span class="ghost-icon">&#128123;</span>
+            </div>
+            <span>FormGhost</span>
+          </a>
+          <p>AI-powered form filling that respects your privacy and your time.</p>
+        </div>
+        <div class="footer-links">
+          <div class="footer-section">
+            <h4>Product</h4>
+            <a href="features.html">Features</a>
+            <a href="index.html#how-it-works">How It Works</a>
+            <a href="#">Chrome Web Store</a>
+          </div>
+          <div class="footer-section">
+            <h4>Support</h4>
+            <a href="support.html">FAQ</a>
+            <a href="mailto:support@formghost.app">Contact</a>
+          </div>
+          <div class="footer-section">
+            <h4>Legal</h4>
+            <a href="privacy.html">Privacy Policy</a>
+            <a href="privacy.html#data">Your Data</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 FormGhost. All rights reserved.</p>
+        <p class="footer-tagline">Made for humans who are tired of acting like robots.</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
