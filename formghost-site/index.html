@@ -4,132 +4,357 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="FormGhost - AI-powered Chrome extension that auto-fills forms in seconds. Privacy-first, 50 free fills per month.">
-  <title>FormGhost - Fill Forms in Seconds, Not Minutes</title>
+  <title>FormGhost - Your Forms, Filled Instantly</title>
   <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
   <!-- Header -->
   <header>
     <div class="header-container">
       <a href="/" class="logo">
-        <span class="logo-icon">👻</span>
+        <div class="logo-ghost">
+          <span class="ghost-icon">&#128123;</span>
+        </div>
         <span>FormGhost</span>
       </a>
       <nav>
+        <a href="#how-it-works">How It Works</a>
+        <a href="#features">Features</a>
         <a href="support.html">Support</a>
         <a href="privacy.html">Privacy</a>
       </nav>
+      <a href="#" class="nav-cta">Get Extension</a>
     </div>
   </header>
 
   <!-- Hero Section -->
   <section class="hero">
+    <div class="hero-bg">
+      <div class="gradient-orb orb-1"></div>
+      <div class="gradient-orb orb-2"></div>
+      <div class="gradient-orb orb-3"></div>
+    </div>
     <div class="hero-container">
-      <h1>Fill forms in seconds, not minutes</h1>
+      <div class="hero-badge">
+        <span class="badge-dot"></span>
+        Now available on Chrome Web Store
+      </div>
+      <h1>Stop typing.<br><span class="gradient-text">Start ghosting.</span></h1>
       <p class="subtitle">
-        Stop typing the same information over and over. FormGhost uses AI to instantly fill any form with your saved data—perfect for insurance agents, bookkeepers, and anyone tired of repetitive data entry.
+        You know that feeling when you're filling out your 47th form of the day?
+        Yeah, we hate it too. FormGhost uses AI to instantly fill any form with your saved data.
+        It's like having a really fast assistant who never complains.
       </p>
-      <a href="#" class="cta-button">Add to Chrome - It's Free</a>
-      <p class="cta-secondary">50 free AI fills per month • No credit card required</p>
+      <div class="hero-ctas">
+        <a href="#" class="cta-button primary">
+          <span class="cta-icon">&#10035;</span>
+          Add to Chrome - Free
+        </a>
+        <a href="#how-it-works" class="cta-button secondary">
+          See how it works
+          <span class="arrow">&#8594;</span>
+        </a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat">
+          <span class="stat-number">50</span>
+          <span class="stat-label">Free fills/month</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-number">0</span>
+          <span class="stat-label">Data uploaded</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-number">&lt;3s</span>
+          <span class="stat-label">To fill any form</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="demo-window">
+        <div class="window-header">
+          <div class="window-dots">
+            <span></span><span></span><span></span>
+          </div>
+          <div class="window-title">insurance-application.com</div>
+        </div>
+        <div class="demo-content">
+          <div class="form-field filling" style="--delay: 0s">
+            <span class="field-label">First Name</span>
+            <span class="field-value">Sarah</span>
+          </div>
+          <div class="form-field filling" style="--delay: 0.1s">
+            <span class="field-label">Last Name</span>
+            <span class="field-value">Johnson</span>
+          </div>
+          <div class="form-field filling" style="--delay: 0.2s">
+            <span class="field-label">Email Address</span>
+            <span class="field-value">sarah@company.com</span>
+          </div>
+          <div class="form-field filling" style="--delay: 0.3s">
+            <span class="field-label">Phone Number</span>
+            <span class="field-value">(555) 123-4567</span>
+          </div>
+          <div class="form-field filling" style="--delay: 0.4s">
+            <span class="field-label">Address</span>
+            <span class="field-value">123 Main Street</span>
+          </div>
+          <div class="ghost-cursor"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pain Point Section -->
+  <section class="pain-section">
+    <div class="section-container">
+      <div class="pain-content">
+        <h2>Let's be honest...</h2>
+        <p class="pain-text">
+          You became an insurance agent to help people, not to type "123 Main Street"
+          for the 500th time this month. You're a bookkeeper with actual books to keep,
+          not a human copy-paste machine.
+        </p>
+        <p class="pain-text highlight">
+          <strong>The average professional spends 6+ hours per week</strong> on repetitive form filling.
+          That's 300+ hours a year. Gone. Vanished. Like a ghost. <span class="ghost-emoji">&#128123;</span>
+        </p>
+      </div>
     </div>
   </section>
 
   <!-- How It Works -->
-  <section class="how-it-works">
+  <section class="how-it-works" id="how-it-works">
     <div class="section-container">
-      <h2>How It Works</h2>
+      <div class="section-header">
+        <span class="section-tag">Dead Simple</span>
+        <h2>Three steps to freedom</h2>
+        <p>No training. No complex setup. Just install and go.</p>
+      </div>
       <div class="steps">
         <div class="step">
-          <div class="step-number">1</div>
-          <h3>Install the Extension</h3>
-          <p>Add FormGhost to Chrome with one click. It takes less than 10 seconds to get started.</p>
+          <div class="step-visual">
+            <div class="step-icon">
+              <span>&#128268;</span>
+            </div>
+            <div class="step-line"></div>
+          </div>
+          <div class="step-content">
+            <span class="step-number">01</span>
+            <h3>Install in 10 seconds</h3>
+            <p>Click "Add to Chrome" and you're done. No account needed. No email required. No strings attached.</p>
+          </div>
         </div>
         <div class="step">
-          <div class="step-number">2</div>
-          <h3>Save Your Data Locally</h3>
-          <p>Enter your information once—it's stored securely in your browser. Your data never leaves your computer.</p>
+          <div class="step-visual">
+            <div class="step-icon">
+              <span>&#128100;</span>
+            </div>
+            <div class="step-line"></div>
+          </div>
+          <div class="step-content">
+            <span class="step-number">02</span>
+            <h3>Save your info once</h3>
+            <p>Enter client details once. They stay in YOUR browser. We literally cannot see them (and we designed it that way).</p>
+          </div>
         </div>
         <div class="step">
-          <div class="step-number">3</div>
-          <h3>Click Fill on Any Form</h3>
-          <p>Open any web form, click the FormGhost button, and watch it fill instantly. Works on any website.</p>
+          <div class="step-visual">
+            <div class="step-icon">
+              <span>&#128123;</span>
+            </div>
+          </div>
+          <div class="step-content">
+            <span class="step-number">03</span>
+            <h3>Click. Done. Ghost.</h3>
+            <p>Open any form, click the ghost button, watch the magic happen. Works on sites you've never seen before.</p>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Features -->
-  <section class="features">
+  <!-- Features Section -->
+  <section class="features" id="features">
     <div class="section-container">
-      <h2>Key Features</h2>
+      <div class="section-header">
+        <span class="section-tag">Features</span>
+        <h2>Everything you need,<br>nothing you don't</h2>
+      </div>
       <div class="feature-grid">
-        <div class="feature-card">
-          <div class="feature-icon">🤖</div>
-          <h3>AI-Powered Field Matching</h3>
-          <p>Advanced AI understands field labels and context, so it works on any form—even ones you've never seen before.</p>
+        <div class="feature-card featured">
+          <div class="feature-badge">Privacy First</div>
+          <div class="feature-icon-large">&#128274;</div>
+          <h3>Your data stays yours</h3>
+          <p>Your information never leaves your computer. When we use AI to match fields, we only send the field labels ("First Name"), never your actual data ("John"). Zero. Nada. None.</p>
+          <div class="feature-visual">
+            <div class="data-flow">
+              <div class="data-item sent">
+                <span class="label">Sent to AI:</span>
+                <code>"First Name", "Email"</code>
+              </div>
+              <div class="data-item kept">
+                <span class="label">Stays on your PC:</span>
+                <code>"John", "john@email.com"</code>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="feature-card">
-          <div class="feature-icon">🔒</div>
-          <h3>Privacy-First Design</h3>
-          <p>Your personal data never leaves your browser. Only field labels are sent to AI for matching—zero PII transmission.</p>
-          <span class="feature-badge">100% Local Storage</span>
+          <div class="feature-icon">&#129302;</div>
+          <h3>AI that actually gets it</h3>
+          <p>Our AI understands context. "Given Name" = "First Name" = "Nombre". Works on forms in any layout, any language, any website.</p>
         </div>
         <div class="feature-card">
-          <div class="feature-icon">⚡</div>
-          <h3>50 Free AI Fills/Month</h3>
-          <p>Get started with 50 AI-powered form fills every month, completely free. Perfect for occasional use.</p>
+          <div class="feature-icon">&#128101;</div>
+          <h3>Multiple profiles</h3>
+          <p>Save unlimited client profiles. Switch between them instantly. Perfect for agents filling forms for different customers.</p>
         </div>
         <div class="feature-card">
-          <div class="feature-icon">📋</div>
-          <h3>Multiple Profiles</h3>
-          <p>Save multiple client profiles and switch between them instantly. Ideal for professionals who fill forms for others.</p>
+          <div class="feature-icon">&#9889;</div>
+          <h3>Ridiculously fast</h3>
+          <p>Most forms fill in under 3 seconds. Some in under 1. Your bottleneck is now how fast you can click "Submit".</p>
         </div>
         <div class="feature-card">
-          <div class="feature-icon">🎯</div>
-          <h3>Smart Context Detection</h3>
-          <p>Automatically adapts to different form formats, field names, and layouts. No manual configuration needed.</p>
+          <div class="feature-icon">&#128196;</div>
+          <h3>CSV import/export</h3>
+          <p>Bulk import clients from spreadsheets. Export for backup. Your data, your control, always.</p>
         </div>
         <div class="feature-card">
-          <div class="feature-icon">💾</div>
-          <h3>CSV Import/Export</h3>
-          <p>Bulk import client data from spreadsheets or export for backup. Works with any standard CSV format.</p>
+          <div class="feature-icon">&#127919;</div>
+          <h3>Smart field detection</h3>
+          <p>Shows you exactly which fields it filled and which ones need manual attention. No mysteries.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- CTA Section -->
-  <section class="hero">
-    <div class="hero-container">
-      <h2>Ready to save hours every week?</h2>
-      <p class="subtitle">
-        Join thousands of professionals who've eliminated repetitive form filling from their daily workflow.
-      </p>
-      <a href="#" class="cta-button">Get FormGhost for Free</a>
+  <!-- Social Proof Section -->
+  <section class="social-proof">
+    <div class="section-container">
+      <div class="section-header">
+        <span class="section-tag">Built For</span>
+        <h2>People who fill forms for a living</h2>
+      </div>
+      <div class="use-cases">
+        <div class="use-case">
+          <div class="use-case-icon">&#128202;</div>
+          <h3>Insurance Agents</h3>
+          <p>Fill policy applications, claims forms, and client intake forms across dozens of carrier websites.</p>
+        </div>
+        <div class="use-case">
+          <div class="use-case-icon">&#128200;</div>
+          <h3>Bookkeepers & Accountants</h3>
+          <p>Client onboarding, tax forms, vendor applications - all the repetitive stuff that eats your billable hours.</p>
+        </div>
+        <div class="use-case">
+          <div class="use-case-icon">&#127970;</div>
+          <h3>Real Estate Professionals</h3>
+          <p>Listing forms, buyer applications, inspection requests - stop retyping addresses for every property.</p>
+        </div>
+        <div class="use-case">
+          <div class="use-case-icon">&#128188;</div>
+          <h3>HR & Recruiters</h3>
+          <p>Candidate profiles, job postings, onboarding paperwork - let the ghost handle the boring parts.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing/CTA Section -->
+  <section class="pricing-section">
+    <div class="section-container">
+      <div class="pricing-card">
+        <div class="pricing-header">
+          <span class="pricing-tag">Free Forever</span>
+          <h2>Start with 50 fills/month</h2>
+          <p>No credit card. No trial. Just free.</p>
+        </div>
+        <div class="pricing-features">
+          <div class="pricing-feature">
+            <span class="check">&#10003;</span>
+            <span>50 AI-powered fills per month</span>
+          </div>
+          <div class="pricing-feature">
+            <span class="check">&#10003;</span>
+            <span>Unlimited saved profiles</span>
+          </div>
+          <div class="pricing-feature">
+            <span class="check">&#10003;</span>
+            <span>CSV import/export</span>
+          </div>
+          <div class="pricing-feature">
+            <span class="check">&#10003;</span>
+            <span>Privacy-first architecture</span>
+          </div>
+          <div class="pricing-feature">
+            <span class="check">&#10003;</span>
+            <span>Works on any website</span>
+          </div>
+        </div>
+        <a href="#" class="cta-button primary large">
+          Get FormGhost Free
+        </a>
+        <p class="pricing-note">Need more fills? Pro plan coming soon.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="final-cta">
+    <div class="section-container">
+      <div class="cta-content">
+        <h2>Ready to get those hours back?</h2>
+        <p>Join thousands of professionals who've stopped typing and started ghosting.</p>
+        <a href="#" class="cta-button primary large">
+          <span class="cta-icon">&#128123;</span>
+          Add to Chrome - It's Free
+        </a>
+      </div>
     </div>
   </section>
 
   <!-- Footer -->
   <footer>
     <div class="footer-container">
-      <div class="footer-section">
-        <h4>FormGhost</h4>
-        <p>AI-powered form filling for professionals who value their time and privacy.</p>
+      <div class="footer-main">
+        <div class="footer-brand">
+          <a href="/" class="logo">
+            <div class="logo-ghost">
+              <span class="ghost-icon">&#128123;</span>
+            </div>
+            <span>FormGhost</span>
+          </a>
+          <p>AI-powered form filling that respects your privacy and your time.</p>
+        </div>
+        <div class="footer-links">
+          <div class="footer-section">
+            <h4>Product</h4>
+            <a href="#features">Features</a>
+            <a href="#how-it-works">How It Works</a>
+            <a href="#">Chrome Web Store</a>
+          </div>
+          <div class="footer-section">
+            <h4>Support</h4>
+            <a href="support.html">FAQ</a>
+            <a href="mailto:support@formghost.app">Contact</a>
+          </div>
+          <div class="footer-section">
+            <h4>Legal</h4>
+            <a href="privacy.html">Privacy Policy</a>
+            <a href="privacy.html#data">Your Data</a>
+          </div>
+        </div>
       </div>
-      <div class="footer-section">
-        <h4>Product</h4>
-        <a href="#features">Features</a>
-        <a href="support.html">Support</a>
-        <a href="privacy.html">Privacy Policy</a>
+      <div class="footer-bottom">
+        <p>&copy; 2025 FormGhost. All rights reserved.</p>
+        <p class="footer-tagline">Made for humans who are tired of acting like robots.</p>
       </div>
-      <div class="footer-section">
-        <h4>Company</h4>
-        <a href="mailto:support@formghost.app">Contact Us</a>
-        <a href="#">Chrome Web Store</a>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <p>&copy; 2025 FormGhost. All rights reserved.</p>
     </div>
   </footer>
 </body>

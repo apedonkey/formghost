@@ -6,186 +6,188 @@
   <meta name="description" content="FormGhost Privacy Policy - Learn how we protect your data and privacy.">
   <title>Privacy Policy - FormGhost</title>
   <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
   <!-- Header -->
   <header>
     <div class="header-container">
       <a href="/" class="logo">
-        <span class="logo-icon">👻</span>
+        <div class="logo-ghost">
+          <span class="ghost-icon">&#128123;</span>
+        </div>
         <span>FormGhost</span>
       </a>
       <nav>
-        <a href="index.html">Home</a>
+        <a href="index.html#how-it-works">How It Works</a>
+        <a href="index.html#features">Features</a>
         <a href="support.html">Support</a>
         <a href="privacy.html">Privacy</a>
       </nav>
+      <a href="#" class="nav-cta">Get Extension</a>
     </div>
   </header>
 
-  <!-- Privacy Content -->
-  <section class="privacy-content">
+  <!-- Page Header -->
+  <section class="page-header">
     <div class="section-container">
+      <span class="section-tag">Legal</span>
       <h1>Privacy Policy</h1>
-      <p style="color: var(--text-secondary); margin-bottom: 2rem;">
-        <strong>Last Updated:</strong> January 2025
+      <p class="subtitle" style="max-width: 600px; margin: 1rem auto 0;">
+        Last updated: January 2025
       </p>
+    </div>
+  </section>
 
+  <!-- Privacy Content -->
+  <section class="page-content">
+    <div class="highlight-box" style="margin-bottom: 3rem;">
+      <p>
+        <strong>The Short Version:</strong> FormGhost is built with privacy as the foundation, not an afterthought. Your personal data stays on your computer. We can't see it, access it, or share it - because we never have it in the first place.
+      </p>
+    </div>
+
+    <div class="content-section" id="data">
+      <h2>What We Collect (It's Not Much)</h2>
+      <p>FormGhost collects the bare minimum needed to work:</p>
+      <ul>
+        <li><strong>Local Browser Storage:</strong> Your saved profiles (names, addresses, etc.) are stored in your browser using Chrome's secure local storage. This data literally never leaves your computer.</li>
+        <li><strong>Field Labels Only:</strong> When you use AI form filling, we send only the <em>labels</em> of form fields (like "First Name" or "Phone Number") to our AI. Your actual data ("John" or "555-1234") stays on your machine.</li>
+        <li><strong>Usage Counter:</strong> We track how many AI fills you've used this month (stored locally) so we know when you've hit your free limit.</li>
+      </ul>
+    </div>
+
+    <div class="content-section">
+      <h2>What We Don't Collect (The Important Part)</h2>
+      <p>We explicitly do NOT collect, store, or transmit:</p>
+      <ul>
+        <li>Your personal information (names, addresses, phone numbers, SSN, etc.)</li>
+        <li>The actual data you fill into forms</li>
+        <li>Your browsing history</li>
+        <li>Cookies or tracking identifiers</li>
+        <li>Any personally identifiable information (PII)</li>
+      </ul>
+      <p>We couldn't sell your data even if we wanted to - we don't have it.</p>
+    </div>
+
+    <div class="content-section">
+      <h2>How the AI Part Works</h2>
+      <p>
+        When you click "Fill Form," here's exactly what happens:
+      </p>
       <div class="highlight-box">
-        <p>
-          <strong>Privacy-First Promise:</strong> FormGhost is designed from the ground up to protect your privacy. Your personal information stays on your computer—we never upload, store, or share your data with anyone.
-        </p>
+        <p><strong>What gets sent to AI:</strong></p>
+        <p style="font-family: monospace; margin: 0.5rem 0;">"First Name", "Last Name", "Email Address", "Phone"</p>
+        <p style="margin-top: 1rem;"><strong>What stays on your computer:</strong></p>
+        <p style="font-family: monospace; margin: 0.5rem 0;">"John", "Smith", "john@example.com", "555-1234"</p>
       </div>
+      <p>
+        The AI figures out which field goes with which data type, then your browser fills in your actual data locally. The AI never sees your personal information.
+      </p>
+    </div>
 
-      <div class="privacy-section">
-        <h3>What Data We Collect</h3>
-        <p>FormGhost collects minimal data to provide its service:</p>
-        <ul>
-          <li><strong>Local Browser Storage:</strong> Your saved client profiles (names, addresses, emails, etc.) are stored locally in your browser using Chrome's secure storage API. This data never leaves your computer.</li>
-          <li><strong>AI Field Labels:</strong> When using AI-powered form filling, only the <em>labels</em> of form fields (like "First Name" or "Email Address") are sent to our AI service to determine field matching. Your actual personal data is never transmitted.</li>
-          <li><strong>Usage Statistics:</strong> We track the number of AI fills you've used each month (stored locally) to enforce the 50 fills/month limit on the free tier.</li>
-        </ul>
-      </div>
+    <div class="content-section">
+      <h2>Third-Party Services</h2>
+      <p>We use one external service:</p>
+      <ul>
+        <li><strong>Anthropic Claude AI:</strong> For intelligent field matching. Only receives field labels, never your personal data. <a href="https://www.anthropic.com/privacy" target="_blank">Their privacy policy</a>.</li>
+      </ul>
+    </div>
 
-      <div class="privacy-section">
-        <h3>What Data We Do NOT Collect</h3>
-        <p>We explicitly do not collect, store, or transmit:</p>
-        <ul>
-          <li>Your personal information (names, addresses, phone numbers, emails, SSN, etc.)</li>
-          <li>Form data you've filled out</li>
-          <li>Your browsing history or activity</li>
-          <li>Cookies or tracking identifiers</li>
-          <li>Any personally identifiable information (PII)</li>
-        </ul>
-      </div>
+    <div class="content-section">
+      <h2>Data Security</h2>
+      <ul>
+        <li>All API communications use HTTPS encryption</li>
+        <li>Your data is stored using Chrome's secure storage APIs</li>
+        <li>We follow Chrome extension security best practices</li>
+        <li>No passwords or API keys are stored in your browser</li>
+      </ul>
+    </div>
 
-      <div class="privacy-section">
-        <h3>How Your Data is Stored</h3>
-        <p>
-          All your personal data is stored locally in your browser using Chrome's <code>chrome.storage.local</code> API. This is the same secure storage mechanism Chrome uses for passwords and bookmarks. Your data:
-        </p>
-        <ul>
-          <li>Never leaves your computer</li>
-          <li>Is not synced to the cloud</li>
-          <li>Is not accessible to other websites or extensions</li>
-          <li>Remains under your complete control</li>
-        </ul>
-      </div>
+    <div class="content-section">
+      <h2>Your Control</h2>
+      <p>You have complete control over your data:</p>
+      <ul>
+        <li><strong>Export:</strong> Download all your data as a CSV anytime</li>
+        <li><strong>Delete:</strong> Remove individual profiles or everything at once</li>
+        <li><strong>Uninstall:</strong> Removing the extension permanently deletes all local data</li>
+      </ul>
+    </div>
 
-      <div class="privacy-section">
-        <h3>AI Service and Data Processing</h3>
-        <p>
-          When you use AI-powered form filling, FormGhost sends only field <strong>labels</strong> to Anthropic's Claude AI service to determine which fields should be filled with which data. For example:
-        </p>
-        <div class="highlight-box">
-          <p><strong>What we send:</strong> "First Name", "Last Name", "Email Address", "Phone Number"</p>
-          <p><strong>What we DO NOT send:</strong> "John", "Smith", "john@example.com", "555-1234"</p>
-        </div>
-        <p>
-          The AI matching happens in real-time and the field labels are not stored by Anthropic or FormGhost after the matching is complete.
-        </p>
-      </div>
+    <div class="content-section">
+      <h2>No Tracking</h2>
+      <p>
+        FormGhost has zero analytics, zero tracking scripts, zero telemetry. We have no idea:
+      </p>
+      <ul>
+        <li>Which websites you visit</li>
+        <li>How often you use the extension</li>
+        <li>What forms you fill out</li>
+        <li>Who you are</li>
+      </ul>
+      <p>The only thing we track is your monthly AI fill count, and that's stored on your device.</p>
+    </div>
 
-      <div class="privacy-section">
-        <h3>Third-Party Services</h3>
-        <p>FormGhost uses the following third-party service:</p>
-        <ul>
-          <li><strong>Anthropic Claude AI:</strong> Used for intelligent field matching. Only receives field labels, never your personal data. Anthropic's privacy policy is available at <a href="https://www.anthropic.com/privacy" target="_blank" style="color: var(--ghost-purple);">anthropic.com/privacy</a>.</li>
-        </ul>
-      </div>
+    <div class="content-section">
+      <h2>Changes to This Policy</h2>
+      <p>
+        If we ever change this policy (unlikely, since "don't collect data" is pretty simple), we'll update the date at the top. Continued use means you're cool with the changes.
+      </p>
+    </div>
 
-      <div class="privacy-section">
-        <h3>Data Security</h3>
-        <p>
-          We take data security seriously:
-        </p>
-        <ul>
-          <li>All API communications use HTTPS encryption</li>
-          <li>Your data is stored using Chrome's secure storage mechanisms</li>
-          <li>We follow Chrome extension security best practices</li>
-          <li>No passwords or authentication credentials are stored</li>
-        </ul>
-      </div>
+    <div class="content-section">
+      <h2>Contact</h2>
+      <p>Questions about privacy? Email us:</p>
+      <p style="margin-top: 1rem;">
+        <a href="mailto:privacy@formghost.app" class="contact-email">privacy@formghost.app</a>
+      </p>
+    </div>
 
-      <div class="privacy-section">
-        <h3>Your Control Over Your Data</h3>
-        <p>You have complete control over your data:</p>
-        <ul>
-          <li><strong>Export:</strong> Download all your saved data as a CSV file at any time</li>
-          <li><strong>Delete:</strong> Remove individual profiles or all data directly from the extension</li>
-          <li><strong>Uninstall:</strong> Uninstalling FormGhost permanently removes all locally stored data from your browser</li>
-        </ul>
-      </div>
-
-      <div class="privacy-section">
-        <h3>No Tracking or Analytics</h3>
-        <p>
-          FormGhost does not use any analytics, tracking scripts, or telemetry. We don't know:
-        </p>
-        <ul>
-          <li>Which websites you visit</li>
-          <li>How often you use the extension</li>
-          <li>What forms you fill out</li>
-          <li>Any identifying information about you</li>
-        </ul>
-        <p>
-          The only usage metric tracked is your monthly AI fill count, which is stored locally on your device for rate limiting purposes.
-        </p>
-      </div>
-
-      <div class="privacy-section">
-        <h3>Children's Privacy</h3>
-        <p>
-          FormGhost is not intended for use by children under 13 years of age. We do not knowingly collect data from children.
-        </p>
-      </div>
-
-      <div class="privacy-section">
-        <h3>Changes to This Privacy Policy</h3>
-        <p>
-          We may update this privacy policy from time to time. We will notify users of any material changes by updating the "Last Updated" date at the top of this page. Continued use of FormGhost after changes constitutes acceptance of the updated policy.
-        </p>
-      </div>
-
-      <div class="privacy-section">
-        <h3>Contact Us</h3>
-        <p>
-          If you have questions about this privacy policy or how FormGhost handles your data, please contact us at:
-        </p>
-        <p style="margin-top: 1rem;">
-          <a href="mailto:privacy@formghost.app" style="color: var(--ghost-purple); font-weight: 600;">privacy@formghost.app</a>
-        </p>
-      </div>
-
-      <div class="highlight-box" style="margin-top: 3rem;">
-        <p>
-          <strong>Bottom Line:</strong> FormGhost was built with privacy as the #1 priority. Your data stays on your computer, and we can't access it even if we wanted to. We believe form-filling tools should help you work faster—not compromise your privacy.
-        </p>
-      </div>
+    <div class="highlight-box" style="margin-top: 3rem;">
+      <p>
+        <strong>Bottom Line:</strong> We built FormGhost because we were tired of form-filling tools that wanted all our data. Your information is yours. We just help you use it faster.
+      </p>
     </div>
   </section>
 
   <!-- Footer -->
   <footer>
     <div class="footer-container">
-      <div class="footer-section">
-        <h4>FormGhost</h4>
-        <p>AI-powered form filling for professionals who value their time and privacy.</p>
+      <div class="footer-main">
+        <div class="footer-brand">
+          <a href="/" class="logo">
+            <div class="logo-ghost">
+              <span class="ghost-icon">&#128123;</span>
+            </div>
+            <span>FormGhost</span>
+          </a>
+          <p>AI-powered form filling that respects your privacy and your time.</p>
+        </div>
+        <div class="footer-links">
+          <div class="footer-section">
+            <h4>Product</h4>
+            <a href="index.html#features">Features</a>
+            <a href="index.html#how-it-works">How It Works</a>
+            <a href="#">Chrome Web Store</a>
+          </div>
+          <div class="footer-section">
+            <h4>Support</h4>
+            <a href="support.html">FAQ</a>
+            <a href="mailto:support@formghost.app">Contact</a>
+          </div>
+          <div class="footer-section">
+            <h4>Legal</h4>
+            <a href="privacy.html">Privacy Policy</a>
+            <a href="privacy.html#data">Your Data</a>
+          </div>
+        </div>
       </div>
-      <div class="footer-section">
-        <h4>Product</h4>
-        <a href="index.html#features">Features</a>
-        <a href="support.html">Support</a>
-        <a href="privacy.html">Privacy Policy</a>
+      <div class="footer-bottom">
+        <p>&copy; 2025 FormGhost. All rights reserved.</p>
+        <p class="footer-tagline">Made for humans who are tired of acting like robots.</p>
       </div>
-      <div class="footer-section">
-        <h4>Company</h4>
-        <a href="mailto:support@formghost.app">Contact Us</a>
-        <a href="#">Chrome Web Store</a>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <p>&copy; 2025 FormGhost. All rights reserved.</p>
     </div>
   </footer>
 </body>
