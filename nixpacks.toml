@@ -1,11 +1,11 @@
 [phases.setup]
-nixPkgs = ["nodejs_18"]
+nixPkgs = ["nodejs_20", "npm-10_x"]
 
 [phases.install]
-cmds = ["cd formghost-site && npm install"]
+cmds = ["npm install"]
 
 [phases.build]
 cmds = []
 
 [start]
-cmd = "cd formghost-site && npm start"
+cmd = "node formghost-site/server.js"
