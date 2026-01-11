@@ -1,25 +1,49 @@
 const express = require('express');
 const path = require('path');
+const fs = require('fs');
 const nodemailer = require('nodemailer');
-const Database = require('better-sqlite3');
+const initSqlJs = require('sql.js');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // __dirname is always the directory containing this file (formghost-site)
 const siteDir = __dirname;
+const dbPath = path.join(siteDir, 'subscribers.db');
+
+let db;
 
 // Initialize SQLite database
-const db = new Database(path.join(siteDir, 'subscribers.db'));
-db.exec(`
-  CREATE TABLE IF NOT EXISTS subscribers (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    email TEXT UNIQUE NOT NULL,
-    subscribed_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    ip_address TEXT,
-    user_agent TEXT
-  )
-`);
+async function initDatabase() {
+  const SQL = await initSqlJs();
+
+  // Load existing database or create new one
+  if (fs.existsSync(dbPath)) {
+    const buffer = fs.readFileSync(dbPath);
+    db = new SQL.Database(buffer);
+  } else {
+    db = new SQL.Database();
+  }
+
+  db.run(`
+    CREATE TABLE IF NOT EXISTS subscribers (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      email TEXT UNIQUE NOT NULL,
+      subscribed_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      ip_address TEXT,
+      user_agent TEXT
+    )
+  `);
+
+  saveDatabase();
+}
+
+// Save database to disk
+function saveDatabase() {
+  const data = db.export();
+  const buffer = Buffer.from(data);
+  fs.writeFileSync(dbPath, buffer);
+}
 
 // Email transporter configuration (Postal SMTP)
 const transporter = nodemailer.createTransport({
@@ -59,8 +83,8 @@ app.post('/subscribe', async (req, res) => {
     }
 
     // Check if email already exists
-    const existing = db.prepare('SELECT id FROM subscribers WHERE email = ?').get(cleanEmail);
-    if (existing) {
+    const existing = db.exec('SELECT id FROM subscribers WHERE email = ?', [cleanEmail]);
+    if (existing.length > 0 && existing[0].values.length > 0) {
       return res.json({ success: true, message: 'Already subscribed' });
     }
 
@@ -69,14 +93,16 @@ app.post('/subscribe', async (req, res) => {
     const userAgent = req.headers['user-agent'] || null;
 
     // Insert into database
-    const stmt = db.prepare('INSERT INTO subscribers (email, ip_address, user_agent) VALUES (?, ?, ?)');
-    stmt.run(cleanEmail, ipAddress, userAgent);
+    db.run('INSERT INTO subscribers (email, ip_address, user_agent) VALUES (?, ?, ?)',
+      [cleanEmail, ipAddress, userAgent]);
+    saveDatabase();
 
     // Get subscriber count
-    const count = db.prepare('SELECT COUNT(*) as count FROM subscribers').get();
+    const countResult = db.exec('SELECT COUNT(*) as count FROM subscribers');
+    const count = countResult[0].values[0][0];
 
     // Send notification email (don't await, fire and forget)
-    sendNotificationEmail(cleanEmail, count.count).catch(err => {
+    sendNotificationEmail(cleanEmail, count).catch(err => {
       console.error('Failed to send notification email:', err.message);
     });
 
@@ -85,7 +111,7 @@ app.post('/subscribe', async (req, res) => {
   } catch (error) {
     console.error('Subscribe error:', error);
 
-    if (error.code === 'SQLITE_CONSTRAINT_UNIQUE') {
+    if (error.message && error.message.includes('UNIQUE constraint failed')) {
       return res.json({ success: true, message: 'Already subscribed' });
     }
 
@@ -127,17 +153,12 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(siteDir, 'index.html'));
 });
 
-// Graceful shutdown
-process.on('SIGINT', () => {
-  db.close();
-  process.exit(0);
-});
-
-process.on('SIGTERM', () => {
-  db.close();
-  process.exit(0);
-});
-
-app.listen(PORT, () => {
-  console.log(`FormGhost site running on port ${PORT}`);
+// Start server after database is ready
+initDatabase().then(() => {
+  app.listen(PORT, () => {
+    console.log(`FormGhost site running on port ${PORT}`);
+  });
+}).catch(err => {
+  console.error('Failed to initialize database:', err);
+  process.exit(1);
 });
