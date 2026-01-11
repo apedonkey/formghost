@@ -1,7 +1,7 @@
 {
   "name": "formghost-site",
-  "version": "1.0.0",
-  "description": "FormGhost landing page",
+  "version": "2.0.0",
+  "description": "FormGhost - AI Visibility Tool landing page",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
@@ -10,6 +10,11 @@
     "node": ">=18.0.0"
   },
   "dependencies": {
-    "express": "^4.18.2"
+    "better-sqlite3": "^9.4.3",
+    "express": "^4.18.2",
+    "nodemailer": "^6.9.9"
+  },
+  "devDependencies": {
+    "sharp": "^0.34.5"
   }
 }

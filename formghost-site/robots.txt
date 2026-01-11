@@ -1,0 +1,8 @@
+# FormGhost Robots.txt
+# https://formghost.app
+
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://formghost.app/sitemap.xml

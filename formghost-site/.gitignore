@@ -1,2 +1,10 @@
 node_modules/
 .env
+.env.local
+
+# Database
+subscribers.db
+*.db
+
+# Logs
+*.log
