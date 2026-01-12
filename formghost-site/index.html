@@ -97,7 +97,158 @@
             line-height: 1.6;
             font-size: 16px;
             -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
         }
+
+        /* Subtle background with noise texture and organic shapes */
+        .page-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: -1;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        /* Noise texture overlay */
+        .page-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            opacity: 0.4;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            background-size: 180px;
+        }
+
+        /* Soft organic shapes - not circles, irregular blobs */
+        .bg-shape {
+            position: absolute;
+            opacity: 0.06;
+            filter: blur(60px);
+        }
+
+        .bg-shape-1 {
+            top: -10%;
+            right: -5%;
+            width: 50vw;
+            height: 50vw;
+            max-width: 600px;
+            max-height: 600px;
+            background: linear-gradient(135deg, #0066ff 0%, #00ccff 100%);
+            border-radius: 60% 40% 70% 30% / 40% 60% 30% 70%;
+            animation: morph1 25s ease-in-out infinite;
+        }
+
+        .bg-shape-2 {
+            bottom: 10%;
+            left: -10%;
+            width: 40vw;
+            height: 45vw;
+            max-width: 500px;
+            max-height: 550px;
+            background: linear-gradient(45deg, #1a1a1a 0%, #525252 100%);
+            border-radius: 40% 60% 30% 70% / 60% 40% 70% 30%;
+            animation: morph2 30s ease-in-out infinite;
+        }
+
+        .bg-shape-3 {
+            top: 40%;
+            right: 20%;
+            width: 25vw;
+            height: 25vw;
+            max-width: 300px;
+            max-height: 300px;
+            background: linear-gradient(180deg, #e5e5e5 0%, #a3a3a3 100%);
+            border-radius: 50% 60% 40% 70% / 70% 30% 60% 40%;
+            animation: morph3 20s ease-in-out infinite;
+        }
+
+        /* Subtle grid pattern */
+        .bg-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image:
+                linear-gradient(to right, rgba(0,0,0,0.02) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(0,0,0,0.02) 1px, transparent 1px);
+            background-size: 60px 60px;
+        }
+
+        @keyframes morph1 {
+            0%, 100% { border-radius: 60% 40% 70% 30% / 40% 60% 30% 70%; transform: translate(0, 0) rotate(0deg); }
+            25% { border-radius: 40% 60% 30% 70% / 60% 40% 70% 30%; }
+            50% { border-radius: 50% 50% 60% 40% / 40% 50% 50% 60%; transform: translate(-3%, 3%) rotate(5deg); }
+            75% { border-radius: 70% 30% 50% 50% / 30% 70% 40% 60%; }
+        }
+
+        @keyframes morph2 {
+            0%, 100% { border-radius: 40% 60% 30% 70% / 60% 40% 70% 30%; transform: translate(0, 0) rotate(0deg); }
+            33% { border-radius: 60% 40% 50% 50% / 50% 60% 40% 50%; transform: translate(2%, -2%) rotate(-3deg); }
+            66% { border-radius: 50% 50% 40% 60% / 40% 50% 60% 40%; }
+        }
+
+        @keyframes morph3 {
+            0%, 100% { border-radius: 50% 60% 40% 70% / 70% 30% 60% 40%; transform: translate(0, 0); }
+            50% { border-radius: 60% 40% 60% 40% / 40% 60% 40% 60%; transform: translate(-5%, 5%); }
+        }
+
+        /* Scroll reveal animations */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal-left {
+            opacity: 0;
+            transform: translateX(-30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .reveal-left.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .reveal-right {
+            opacity: 0;
+            transform: translateX(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .reveal-right.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .reveal-scale {
+            opacity: 0;
+            transform: scale(0.95);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .reveal-scale.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Stagger delays for grid items */
+        .stagger-1 { transition-delay: 0.1s; }
+        .stagger-2 { transition-delay: 0.2s; }
+        .stagger-3 { transition-delay: 0.3s; }
+        .stagger-4 { transition-delay: 0.4s; }
 
         .container {
             max-width: 1080px;
@@ -648,6 +799,14 @@
     </style>
 </head>
 <body>
+    <!-- Background elements -->
+    <div class="page-bg">
+        <div class="bg-grid"></div>
+        <div class="bg-shape bg-shape-1"></div>
+        <div class="bg-shape bg-shape-2"></div>
+        <div class="bg-shape bg-shape-3"></div>
+    </div>
+
     <nav>
         <div class="container">
             <a href="#" class="logo">FormGhost</a>
@@ -661,15 +820,15 @@
     <section class="hero">
         <div class="container">
             <div class="hero-inner">
-                <p class="eyebrow">AI Visibility Tool</p>
-                <h1>Find out what AI says when you're not in the room</h1>
-                <p class="hero-desc">Other tools make you guess which prompts to track. We find the real questions people ask about your industry—then show you where you're missing.</p>
+                <p class="eyebrow reveal">AI Visibility Tool</p>
+                <h1 class="reveal stagger-1">Find out what AI says when you're not in the room</h1>
+                <p class="hero-desc reveal stagger-2">Other tools make you guess which prompts to track. We find the real questions people ask about your industry—then show you where you're missing.</p>
 
-                <form class="email-form" id="hero-form">
+                <form class="email-form reveal stagger-3" id="hero-form">
                     <input type="email" class="email-input" name="email" placeholder="you@company.com" required>
                     <button type="submit" class="submit-btn">Join Waitlist</button>
                 </form>
-                <p class="form-note">Free for early access. No credit card required.</p>
+                <p class="form-note reveal stagger-4">Free for early access. No credit card required.</p>
                 <div class="form-message" id="hero-message"></div>
             </div>
         </div>
@@ -677,21 +836,21 @@
 
     <section class="problem">
         <div class="container">
-            <div class="section-header">
+            <div class="section-header reveal">
                 <h2>The problem with AI visibility</h2>
                 <p>People are asking ChatGPT and Perplexity for recommendations in your industry. You have no idea what they're asking—or if you're being mentioned.</p>
             </div>
 
             <div class="problem-grid">
-                <div class="problem-card">
+                <div class="problem-card reveal stagger-1">
                     <h3>You're guessing which prompts matter</h3>
                     <p>Every AI visibility tool makes you pick your own prompts to track. But how do you know which questions people actually ask?</p>
                 </div>
-                <div class="problem-card">
+                <div class="problem-card reveal stagger-2">
                     <h3>There's no search console for AI</h3>
                     <p>Google shows you what queries bring traffic. OpenAI, Anthropic, and Perplexity share nothing. You're completely blind.</p>
                 </div>
-                <div class="problem-card">
+                <div class="problem-card reveal stagger-3">
                     <h3>Competitors show up. You don't.</h3>
                     <p>When someone asks "best tool for X" and AI recommends your competitor, that's a lost customer you'll never know about.</p>
                 </div>
@@ -701,30 +860,30 @@
 
     <section class="how">
         <div class="container">
-            <div class="section-header">
+            <div class="section-header reveal">
                 <h2>How FormGhost works</h2>
                 <p>We find real prompts from Reddit, Quora, Twitter, and forums. Then we check if you show up when people ask AI those questions.</p>
             </div>
 
             <div class="steps">
-                <div class="step">
+                <div class="step reveal stagger-1">
                     <p class="step-num">01</p>
                     <h3>We discover real prompts</h3>
                     <p>Our scrapers monitor Reddit, Quora, Twitter, and niche forums for recommendation-style questions in your industry.</p>
                 </div>
-                <div class="step">
+                <div class="step reveal stagger-2">
                     <p class="step-num">02</p>
                     <h3>We test across AI platforms</h3>
                     <p>Every discovered prompt gets run through ChatGPT, Claude, Perplexity, and Gemini to see who gets mentioned.</p>
                 </div>
-                <div class="step">
+                <div class="step reveal stagger-3">
                     <p class="step-num">03</p>
                     <h3>You see the gaps</h3>
                     <p>Weekly reports show where you're invisible and where competitors are winning. Specific, actionable, no fluff.</p>
                 </div>
             </div>
 
-            <div class="demo">
+            <div class="demo reveal-scale">
                 <div class="demo-header">
                     <span class="demo-dot"></span>
                     <span class="demo-dot"></span>
@@ -773,39 +932,39 @@
 
     <section class="opportunity">
         <div class="container">
-            <div class="section-header">
+            <div class="section-header reveal">
                 <h2>Most businesses haven't figured this out yet</h2>
                 <p>Everyone's still obsessing over Google rankings. Meanwhile, AI search is quietly eating their traffic—and almost no one is tracking it.</p>
             </div>
 
             <div class="stats-grid">
-                <div class="stat-card">
+                <div class="stat-card reveal stagger-1">
                     <p class="stat-number">54%</p>
                     <p class="stat-desc">of consumers now use AI tools for product research</p>
                 </div>
-                <div class="stat-card">
+                <div class="stat-card reveal stagger-2">
                     <p class="stat-number">~0</p>
                     <p class="stat-desc">of your competitors are optimizing for AI mentions</p>
                 </div>
-                <div class="stat-card">
+                <div class="stat-card reveal stagger-3">
                     <p class="stat-number">12-18 mo</p>
                     <p class="stat-desc">head start if you begin tracking now</p>
                 </div>
             </div>
 
-            <p class="opportunity-note">The people who figured out Google SEO early built massive advantages. The same window is open right now for AI search—but it won't stay open long.</p>
+            <p class="opportunity-note reveal">The people who figured out Google SEO early built massive advantages. The same window is open right now for AI search—but it won't stay open long.</p>
         </div>
     </section>
 
     <section class="pricing" id="pricing">
         <div class="container">
-            <div class="section-header">
+            <div class="section-header reveal">
                 <h2>Simple pricing</h2>
                 <p>Start small, scale when it makes sense. Cancel anytime.</p>
             </div>
 
             <div class="pricing-grid">
-                <div class="pricing-card">
+                <div class="pricing-card reveal-left stagger-1">
                     <p class="pricing-label">Starter</p>
                     <p class="pricing-price">$29 <span>/month</span></p>
                     <p class="pricing-desc">For indie hackers and solo founders</p>
@@ -818,7 +977,7 @@
                     <a href="#waitlist" class="pricing-btn outline">Join Waitlist</a>
                 </div>
 
-                <div class="pricing-card featured">
+                <div class="pricing-card featured reveal-right stagger-2">
                     <p class="pricing-label">Pro</p>
                     <p class="pricing-price">$79 <span>/month</span></p>
                     <p class="pricing-desc">For growing teams and agencies</p>
@@ -838,10 +997,10 @@
     <section class="cta" id="waitlist">
         <div class="container">
             <div class="cta-inner">
-                <h2>Get early access</h2>
-                <p>We're opening to the first 100 signups. Join the waitlist to lock in early pricing.</p>
+                <h2 class="reveal">Get early access</h2>
+                <p class="reveal stagger-1">We're opening to the first 100 signups. Join the waitlist to lock in early pricing.</p>
 
-                <form class="email-form" id="cta-form">
+                <form class="email-form reveal stagger-2" id="cta-form">
                     <input type="email" class="email-input" name="email" placeholder="you@company.com" required>
                     <button type="submit" class="submit-btn">Join Waitlist</button>
                 </form>
@@ -918,6 +1077,48 @@
                 e.preventDefault();
                 document.querySelector(this.getAttribute('href'))?.scrollIntoView({ behavior: 'smooth' });
             });
+        });
+
+        // Scroll reveal animations with Intersection Observer
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px 0px -80px 0px',
+            threshold: 0.1
+        };
+
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    // Optionally unobserve after animation
+                    // revealObserver.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        // Observe all reveal elements
+        document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale').forEach(el => {
+            revealObserver.observe(el);
+        });
+
+        // Parallax effect for background shapes on scroll
+        let ticking = false;
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                window.requestAnimationFrame(() => {
+                    const scrollY = window.scrollY;
+                    const shapes = document.querySelectorAll('.bg-shape');
+
+                    shapes.forEach((shape, index) => {
+                        const speed = 0.03 + (index * 0.01);
+                        const yOffset = scrollY * speed;
+                        shape.style.transform = `translateY(${yOffset}px)`;
+                    });
+
+                    ticking = false;
+                });
+                ticking = true;
+            }
         });
     </script>
 </body>
