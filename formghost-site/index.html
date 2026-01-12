@@ -865,7 +865,7 @@
             btn.disabled = true;
             btn.textContent = 'Joining...';
             messageEl.className = 'form-message';
-            messageEl.style.display = 'none';
+            messageEl.style.display = '';
 
             try {
                 const response = await fetch('/subscribe', {
