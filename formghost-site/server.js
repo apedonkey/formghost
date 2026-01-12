@@ -42,22 +42,23 @@ function saveDatabase() {
   fs.writeFileSync(dbPath, buffer);
 }
 
-// Postal SMTP - credential key is used as BOTH username and password
-const SMTP_KEY = process.env.POSTAL_PASSWORD;
+// Postal SMTP configuration
+const SMTP_USERNAME = process.env.POSTAL_USERNAME;
+const SMTP_PASSWORD = process.env.POSTAL_PASSWORD;
 const SMTP_HOST = process.env.POSTAL_HOST || 'mail.driftly.email';
-const SMTP_PORT = parseInt(process.env.POSTAL_PORT || '25');
+const SMTP_PORT = parseInt(process.env.POSTAL_PORT || '2525');
 const FROM_ADDRESS = process.env.POSTAL_FROM || 'noreply@driftly.email';
 const NOTIFY_EMAIL = process.env.NOTIFY_EMAIL;
 
-console.log('SMTP Config:', { host: SMTP_HOST, port: SMTP_PORT, from: FROM_ADDRESS, to: NOTIFY_EMAIL, keySet: !!SMTP_KEY });
+console.log('SMTP Config:', { host: SMTP_HOST, port: SMTP_PORT, from: FROM_ADDRESS, to: NOTIFY_EMAIL, userSet: !!SMTP_USERNAME, passSet: !!SMTP_PASSWORD });
 
 const transporter = nodemailer.createTransport({
   host: SMTP_HOST,
   port: SMTP_PORT,
   secure: false,
   auth: {
-    user: SMTP_KEY,
-    pass: SMTP_KEY
+    user: SMTP_USERNAME,
+    pass: SMTP_PASSWORD
   },
   tls: {
     rejectUnauthorized: false
