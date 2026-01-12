@@ -1,7 +1,6 @@
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
-const nodemailer = require('nodemailer');
 const initSqlJs = require('sql.js');
 
 const app = express();
@@ -42,40 +41,36 @@ function saveDatabase() {
   fs.writeFileSync(dbPath, buffer);
 }
 
-// Postal SMTP configuration
-const SMTP_USERNAME = process.env.POSTAL_USERNAME;
-const SMTP_PASSWORD = process.env.POSTAL_PASSWORD;
-const SMTP_HOST = process.env.POSTAL_HOST || 'mail.driftly.email';
-const SMTP_PORT = parseInt(process.env.POSTAL_PORT || '2525');
+// Postal HTTP API configuration
+const POSTAL_API_KEY = process.env.POSTAL_PASSWORD;
+const POSTAL_API_HOST = process.env.POSTAL_API_HOST || 'postal.driftly.email';
 const FROM_ADDRESS = process.env.POSTAL_FROM || 'noreply@driftly.email';
 const NOTIFY_EMAIL = process.env.NOTIFY_EMAIL;
 
-console.log('SMTP Config:', { host: SMTP_HOST, port: SMTP_PORT, from: FROM_ADDRESS, to: NOTIFY_EMAIL, userSet: !!SMTP_USERNAME, passSet: !!SMTP_PASSWORD });
+console.log('Postal API Config:', { host: POSTAL_API_HOST, from: FROM_ADDRESS, to: NOTIFY_EMAIL, keySet: !!POSTAL_API_KEY });
 
-const transporter = nodemailer.createTransport({
-  host: SMTP_HOST,
-  port: SMTP_PORT,
-  secure: false,
-  auth: {
-    user: SMTP_USERNAME,
-    pass: SMTP_PASSWORD
-  },
-  tls: {
-    rejectUnauthorized: false
-  },
-  connectionTimeout: 10000,
-  greetingTimeout: 10000,
-  socketTimeout: 10000
-});
+async function sendEmail({ to, subject, text, html }) {
+  const response = await fetch(`https://${POSTAL_API_HOST}/api/v1/send/message`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Server-API-Key': POSTAL_API_KEY
+    },
+    body: JSON.stringify({
+      to: [to],
+      from: FROM_ADDRESS,
+      subject,
+      plain_body: text,
+      html_body: html
+    })
+  });
 
-// Verify SMTP connection on startup
-transporter.verify((error, success) => {
-  if (error) {
-    console.error('SMTP verification failed:', error.message);
-  } else {
-    console.log('SMTP server ready to send emails');
+  const data = await response.json();
+  if (data.status !== 'success') {
+    throw new Error(data.data?.message || 'Email send failed');
   }
-});
+  return data;
+}
 
 app.use(express.json());
 app.use(express.static(siteDir));
@@ -114,8 +109,7 @@ app.post('/subscribe', async (req, res) => {
     // Send email in background (don't block response)
     console.log(`Attempting to send email for: ${cleanEmail}`);
 
-    transporter.sendMail({
-      from: FROM_ADDRESS,
+    sendEmail({
       to: NOTIFY_EMAIL,
       subject: `New FormGhost Waitlist Signup (#${count})`,
       text: `New subscriber: ${cleanEmail}\nTotal: ${count}\nTime: ${new Date().toISOString()}`,
@@ -132,8 +126,8 @@ app.post('/subscribe', async (req, res) => {
           </p>
         </div>
       `
-    }).then(info => {
-      console.log('Email sent successfully:', info.messageId);
+    }).then(result => {
+      console.log('Email sent successfully:', result);
     }).catch(emailErr => {
       console.error('Email send failed:', emailErr.message);
     });
