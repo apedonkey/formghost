@@ -7,7 +7,6 @@ const initSqlJs = require('sql.js');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// __dirname is always the directory containing this file (formghost-site)
 const siteDir = __dirname;
 const dbPath = path.join(siteDir, 'subscribers.db');
 
@@ -17,7 +16,6 @@ let db;
 async function initDatabase() {
   const SQL = await initSqlJs();
 
-  // Load existing database or create new one
   if (fs.existsSync(dbPath)) {
     const buffer = fs.readFileSync(dbPath);
     db = new SQL.Database(buffer);
@@ -38,40 +36,52 @@ async function initDatabase() {
   saveDatabase();
 }
 
-// Save database to disk
 function saveDatabase() {
   const data = db.export();
   const buffer = Buffer.from(data);
   fs.writeFileSync(dbPath, buffer);
 }
 
-// Postal SMTP configuration
-const transporter = nodemailer.createTransport({
-  host: process.env.POSTAL_HOST || 'mail.driftly.email',
-  port: parseInt(process.env.POSTAL_PORT || '2525'),
-  secure: false,
-  auth: {
-    user: process.env.POSTAL_USERNAME,
-    pass: process.env.POSTAL_PASSWORD
-  }
-});
-
+// Postal SMTP - credential key is used as BOTH username and password
+const SMTP_KEY = process.env.POSTAL_PASSWORD;
+const SMTP_HOST = process.env.POSTAL_HOST || 'mail.driftly.email';
+const SMTP_PORT = parseInt(process.env.POSTAL_PORT || '25');
 const FROM_ADDRESS = process.env.POSTAL_FROM || 'noreply@driftly.email';
 const NOTIFY_EMAIL = process.env.NOTIFY_EMAIL;
 
-// Middleware
+console.log('SMTP Config:', { host: SMTP_HOST, port: SMTP_PORT, from: FROM_ADDRESS, to: NOTIFY_EMAIL, keySet: !!SMTP_KEY });
+
+const transporter = nodemailer.createTransport({
+  host: SMTP_HOST,
+  port: SMTP_PORT,
+  secure: false,
+  auth: {
+    user: SMTP_KEY,
+    pass: SMTP_KEY
+  },
+  tls: {
+    rejectUnauthorized: false
+  }
+});
+
+// Verify SMTP connection on startup
+transporter.verify((error, success) => {
+  if (error) {
+    console.error('SMTP verification failed:', error.message);
+  } else {
+    console.log('SMTP server ready to send emails');
+  }
+});
+
 app.use(express.json());
 app.use(express.static(siteDir));
 
-// Email validation regex
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-// Subscribe endpoint
 app.post('/subscribe', async (req, res) => {
   try {
     const { email } = req.body;
 
-    // Validate email format
     if (!email || typeof email !== 'string') {
       return res.status(400).json({ success: false, error: 'Email is required' });
     }
@@ -82,29 +92,48 @@ app.post('/subscribe', async (req, res) => {
       return res.status(400).json({ success: false, error: 'Please enter a valid email address' });
     }
 
-    // Check if email already exists
     const existing = db.exec('SELECT id FROM subscribers WHERE email = ?', [cleanEmail]);
     if (existing.length > 0 && existing[0].values.length > 0) {
       return res.json({ success: true, message: 'Already subscribed' });
     }
 
-    // Get IP and user agent for records
     const ipAddress = req.headers['x-forwarded-for'] || req.socket.remoteAddress || null;
     const userAgent = req.headers['user-agent'] || null;
 
-    // Insert into database
     db.run('INSERT INTO subscribers (email, ip_address, user_agent) VALUES (?, ?, ?)',
       [cleanEmail, ipAddress, userAgent]);
     saveDatabase();
 
-    // Get subscriber count
     const countResult = db.exec('SELECT COUNT(*) as count FROM subscribers');
     const count = countResult[0].values[0][0];
 
-    // Send notification email (don't await, fire and forget)
-    sendNotificationEmail(cleanEmail, count).catch(err => {
-      console.error('Failed to send notification email:', err.message);
-    });
+    // Send email and log result
+    console.log(`Attempting to send email for: ${cleanEmail}`);
+
+    try {
+      const info = await transporter.sendMail({
+        from: FROM_ADDRESS,
+        to: NOTIFY_EMAIL,
+        subject: `New FormGhost Waitlist Signup (#${count})`,
+        text: `New subscriber: ${cleanEmail}\nTotal: ${count}\nTime: ${new Date().toISOString()}`,
+        html: `
+          <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 480px; margin: 0 auto;">
+            <h2 style="color: #1a1a1a; margin-bottom: 16px;">New FormGhost Waitlist Signup</h2>
+            <div style="background: #f5f5f5; padding: 20px; border-radius: 8px; margin-bottom: 16px;">
+              <p style="margin: 0 0 8px 0; color: #525252;">Email:</p>
+              <p style="margin: 0; font-size: 18px; color: #1a1a1a; font-weight: 500;">${cleanEmail}</p>
+            </div>
+            <p style="color: #737373; font-size: 14px;">
+              Total subscribers: <strong>${count}</strong><br>
+              Time: ${new Date().toLocaleString()}
+            </p>
+          </div>
+        `
+      });
+      console.log('Email sent successfully:', info.messageId);
+    } catch (emailErr) {
+      console.error('Email send failed:', emailErr.message);
+    }
 
     res.json({ success: true });
 
@@ -119,30 +148,6 @@ app.post('/subscribe', async (req, res) => {
   }
 });
 
-// Send notification email via Postal SMTP
-async function sendNotificationEmail(subscriberEmail, totalCount) {
-  await transporter.sendMail({
-    from: FROM_ADDRESS,
-    to: NOTIFY_EMAIL,
-    subject: `New FormGhost Waitlist Signup (#${totalCount})`,
-    text: `New subscriber joined the FormGhost waitlist!\n\nEmail: ${subscriberEmail}\nTotal subscribers: ${totalCount}\nTime: ${new Date().toISOString()}`,
-    html: `
-      <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 480px; margin: 0 auto;">
-        <h2 style="color: #1a1a1a; margin-bottom: 16px;">New FormGhost Waitlist Signup</h2>
-        <div style="background: #f5f5f5; padding: 20px; border-radius: 8px; margin-bottom: 16px;">
-          <p style="margin: 0 0 8px 0; color: #525252;">Email:</p>
-          <p style="margin: 0; font-size: 18px; color: #1a1a1a; font-weight: 500;">${subscriberEmail}</p>
-        </div>
-        <p style="color: #737373; font-size: 14px;">
-          Total subscribers: <strong>${totalCount}</strong><br>
-          Time: ${new Date().toLocaleString()}
-        </p>
-      </div>
-    `
-  });
-}
-
-// Handle SPA-style routing - serve index.html for unknown routes
 app.get('*', (req, res) => {
   const ext = path.extname(req.path);
   if (ext && ext !== '.html') {
@@ -151,10 +156,9 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(siteDir, 'index.html'));
 });
 
-// Start server after database is ready
 initDatabase().then(() => {
   app.listen(PORT, () => {
-    console.log(`FormGhost site running on port ${PORT}`);
+    console.log(`FormGhost running on port ${PORT}`);
   });
 }).catch(err => {
   console.error('Failed to initialize database:', err);
