@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
+const nodemailer = require('nodemailer');
 const initSqlJs = require('sql.js');
 
 const app = express();
@@ -44,9 +45,17 @@ function saveDatabase() {
   fs.writeFileSync(dbPath, buffer);
 }
 
-// Postal HTTP API configuration
-const POSTAL_HOST = process.env.POSTAL_HOST || 'mail.driftly.email';
-const POSTAL_API_KEY = process.env.POSTAL_PASSWORD;
+// Postal SMTP configuration
+const transporter = nodemailer.createTransport({
+  host: process.env.POSTAL_HOST || 'mail.driftly.email',
+  port: parseInt(process.env.POSTAL_PORT || '2525'),
+  secure: false,
+  auth: {
+    user: process.env.POSTAL_USERNAME,
+    pass: process.env.POSTAL_PASSWORD
+  }
+});
+
 const FROM_ADDRESS = process.env.POSTAL_FROM || 'noreply@driftly.email';
 const NOTIFY_EMAIL = process.env.NOTIFY_EMAIL;
 
@@ -110,39 +119,27 @@ app.post('/subscribe', async (req, res) => {
   }
 });
 
-// Send notification email via Postal HTTP API
+// Send notification email via Postal SMTP
 async function sendNotificationEmail(subscriberEmail, totalCount) {
-  const response = await fetch(`https://${POSTAL_HOST}/api/v1/send/message`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-Server-API-Key': POSTAL_API_KEY
-    },
-    body: JSON.stringify({
-      to: [NOTIFY_EMAIL],
-      from: FROM_ADDRESS,
-      subject: `New FormGhost Waitlist Signup (#${totalCount})`,
-      plain_body: `New subscriber joined the FormGhost waitlist!\n\nEmail: ${subscriberEmail}\nTotal subscribers: ${totalCount}\nTime: ${new Date().toISOString()}`,
-      html_body: `
-        <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 480px; margin: 0 auto;">
-          <h2 style="color: #1a1a1a; margin-bottom: 16px;">New FormGhost Waitlist Signup</h2>
-          <div style="background: #f5f5f5; padding: 20px; border-radius: 8px; margin-bottom: 16px;">
-            <p style="margin: 0 0 8px 0; color: #525252;">Email:</p>
-            <p style="margin: 0; font-size: 18px; color: #1a1a1a; font-weight: 500;">${subscriberEmail}</p>
-          </div>
-          <p style="color: #737373; font-size: 14px;">
-            Total subscribers: <strong>${totalCount}</strong><br>
-            Time: ${new Date().toLocaleString()}
-          </p>
+  await transporter.sendMail({
+    from: FROM_ADDRESS,
+    to: NOTIFY_EMAIL,
+    subject: `New FormGhost Waitlist Signup (#${totalCount})`,
+    text: `New subscriber joined the FormGhost waitlist!\n\nEmail: ${subscriberEmail}\nTotal subscribers: ${totalCount}\nTime: ${new Date().toISOString()}`,
+    html: `
+      <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 480px; margin: 0 auto;">
+        <h2 style="color: #1a1a1a; margin-bottom: 16px;">New FormGhost Waitlist Signup</h2>
+        <div style="background: #f5f5f5; padding: 20px; border-radius: 8px; margin-bottom: 16px;">
+          <p style="margin: 0 0 8px 0; color: #525252;">Email:</p>
+          <p style="margin: 0; font-size: 18px; color: #1a1a1a; font-weight: 500;">${subscriberEmail}</p>
         </div>
-      `
-    })
+        <p style="color: #737373; font-size: 14px;">
+          Total subscribers: <strong>${totalCount}</strong><br>
+          Time: ${new Date().toLocaleString()}
+        </p>
+      </div>
+    `
   });
-
-  if (!response.ok) {
-    const error = await response.text();
-    throw new Error(`Postal API error: ${error}`);
-  }
 }
 
 // Handle SPA-style routing - serve index.html for unknown routes
