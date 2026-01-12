@@ -62,7 +62,10 @@ const transporter = nodemailer.createTransport({
   },
   tls: {
     rejectUnauthorized: false
-  }
+  },
+  connectionTimeout: 10000,
+  greetingTimeout: 10000,
+  socketTimeout: 10000
 });
 
 // Verify SMTP connection on startup
@@ -108,33 +111,32 @@ app.post('/subscribe', async (req, res) => {
     const countResult = db.exec('SELECT COUNT(*) as count FROM subscribers');
     const count = countResult[0].values[0][0];
 
-    // Send email and log result
+    // Send email in background (don't block response)
     console.log(`Attempting to send email for: ${cleanEmail}`);
 
-    try {
-      const info = await transporter.sendMail({
-        from: FROM_ADDRESS,
-        to: NOTIFY_EMAIL,
-        subject: `New FormGhost Waitlist Signup (#${count})`,
-        text: `New subscriber: ${cleanEmail}\nTotal: ${count}\nTime: ${new Date().toISOString()}`,
-        html: `
-          <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 480px; margin: 0 auto;">
-            <h2 style="color: #1a1a1a; margin-bottom: 16px;">New FormGhost Waitlist Signup</h2>
-            <div style="background: #f5f5f5; padding: 20px; border-radius: 8px; margin-bottom: 16px;">
-              <p style="margin: 0 0 8px 0; color: #525252;">Email:</p>
-              <p style="margin: 0; font-size: 18px; color: #1a1a1a; font-weight: 500;">${cleanEmail}</p>
-            </div>
-            <p style="color: #737373; font-size: 14px;">
-              Total subscribers: <strong>${count}</strong><br>
-              Time: ${new Date().toLocaleString()}
-            </p>
+    transporter.sendMail({
+      from: FROM_ADDRESS,
+      to: NOTIFY_EMAIL,
+      subject: `New FormGhost Waitlist Signup (#${count})`,
+      text: `New subscriber: ${cleanEmail}\nTotal: ${count}\nTime: ${new Date().toISOString()}`,
+      html: `
+        <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 480px; margin: 0 auto;">
+          <h2 style="color: #1a1a1a; margin-bottom: 16px;">New FormGhost Waitlist Signup</h2>
+          <div style="background: #f5f5f5; padding: 20px; border-radius: 8px; margin-bottom: 16px;">
+            <p style="margin: 0 0 8px 0; color: #525252;">Email:</p>
+            <p style="margin: 0; font-size: 18px; color: #1a1a1a; font-weight: 500;">${cleanEmail}</p>
           </div>
-        `
-      });
+          <p style="color: #737373; font-size: 14px;">
+            Total subscribers: <strong>${count}</strong><br>
+            Time: ${new Date().toLocaleString()}
+          </p>
+        </div>
+      `
+    }).then(info => {
       console.log('Email sent successfully:', info.messageId);
-    } catch (emailErr) {
+    }).catch(emailErr => {
       console.error('Email send failed:', emailErr.message);
-    }
+    });
 
     res.json({ success: true });
 
