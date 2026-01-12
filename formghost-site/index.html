@@ -26,7 +26,24 @@
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 
-    <!-- Schema.org JSON-LD -->
+    <!-- Schema.org JSON-LD - Organization -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "FormGhost",
+        "url": "https://formghost.app",
+        "logo": "https://formghost.app/favicon.svg",
+        "description": "AI visibility monitoring tool that discovers real prompts people ask about your industry.",
+        "contactPoint": {
+            "@type": "ContactPoint",
+            "email": "support@formghost.app",
+            "contactType": "customer support"
+        }
+    }
+    </script>
+
+    <!-- Schema.org JSON-LD - SoftwareApplication -->
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
@@ -66,11 +83,27 @@
     }
     </script>
 
+    <!-- Schema.org JSON-LD - BreadcrumbList -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [{
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://formghost.app/"
+        }]
+    }
+    </script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="index-styles.css">
 
     <style>
+        /* Critical inline styles for above-the-fold content - kept for performance */
         * {
             margin: 0;
             padding: 0;
@@ -817,6 +850,7 @@
         </div>
     </nav>
 
+    <main>
     <section class="hero">
         <div class="container">
             <div class="hero-inner">
@@ -1008,6 +1042,7 @@
             </div>
         </div>
     </section>
+    </main>
 
     <footer>
         <div class="container">
@@ -1016,12 +1051,8 @@
     </footer>
 
     <script>
-        console.log('FormGhost script loaded');
-
         async function handleSubmit(form, messageEl) {
-            console.log('handleSubmit called');
             const email = form.querySelector('input[name="email"]').value;
-            console.log('Email:', email);
             const btn = form.querySelector('button[type="submit"]');
             const originalText = btn.textContent;
 
@@ -1031,16 +1062,13 @@
             messageEl.style.display = '';
 
             try {
-                console.log('Sending fetch request...');
                 const response = await fetch('/subscribe', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email })
                 });
 
-                console.log('Response status:', response.status);
                 const data = await response.json();
-                console.log('Response data:', data);
 
                 if (data.success) {
                     messageEl.textContent = "You're on the list. We'll be in touch soon.";
@@ -1051,7 +1079,6 @@
                     messageEl.className = 'form-message error show';
                 }
             } catch (err) {
-                console.error('Fetch error:', err);
                 messageEl.textContent = 'Network error. Please try again.';
                 messageEl.className = 'form-message error show';
             } finally {
@@ -1061,13 +1088,11 @@
         }
 
         document.getElementById('hero-form').addEventListener('submit', function(e) {
-            console.log('Hero form submitted');
             e.preventDefault();
             handleSubmit(this, document.getElementById('hero-message'));
         });
 
         document.getElementById('cta-form').addEventListener('submit', function(e) {
-            console.log('CTA form submitted');
             e.preventDefault();
             handleSubmit(this, document.getElementById('cta-message'));
         });
