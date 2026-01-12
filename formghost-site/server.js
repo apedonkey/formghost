@@ -7,7 +7,8 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 const siteDir = __dirname;
-const dbPath = path.join(siteDir, 'subscribers.db');
+const dataDir = process.env.DATA_DIR || siteDir;
+const dbPath = path.join(dataDir, 'subscribers.db');
 
 let db;
 
