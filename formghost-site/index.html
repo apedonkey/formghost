@@ -857,8 +857,12 @@
     </footer>
 
     <script>
+        console.log('FormGhost script loaded');
+
         async function handleSubmit(form, messageEl) {
+            console.log('handleSubmit called');
             const email = form.querySelector('input[name="email"]').value;
+            console.log('Email:', email);
             const btn = form.querySelector('button[type="submit"]');
             const originalText = btn.textContent;
 
@@ -868,13 +872,16 @@
             messageEl.style.display = '';
 
             try {
+                console.log('Sending fetch request...');
                 const response = await fetch('/subscribe', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email })
                 });
 
+                console.log('Response status:', response.status);
                 const data = await response.json();
+                console.log('Response data:', data);
 
                 if (data.success) {
                     messageEl.textContent = "You're on the list. We'll be in touch soon.";
@@ -885,6 +892,7 @@
                     messageEl.className = 'form-message error show';
                 }
             } catch (err) {
+                console.error('Fetch error:', err);
                 messageEl.textContent = 'Network error. Please try again.';
                 messageEl.className = 'form-message error show';
             } finally {
@@ -894,11 +902,13 @@
         }
 
         document.getElementById('hero-form').addEventListener('submit', function(e) {
+            console.log('Hero form submitted');
             e.preventDefault();
             handleSubmit(this, document.getElementById('hero-message'));
         });
 
         document.getElementById('cta-form').addEventListener('submit', function(e) {
+            console.log('CTA form submitted');
             e.preventDefault();
             handleSubmit(this, document.getElementById('cta-message'));
         });
